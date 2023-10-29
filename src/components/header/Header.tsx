@@ -3,7 +3,6 @@ import styles from './Header.module.css';
 import { ShowData, TEXTS } from '../../types';
 import { getQueryFromLS, saveNewQueryInLS } from '../../services/localStorage';
 import { getDataFromApi } from '../../services/api';
-import { ErrorComponent } from '../ErorrComponent';
 
 type HeaderProps = {
   setItems: (data: ShowData[]) => void;
@@ -11,6 +10,7 @@ type HeaderProps = {
 
 type HeaderState = {
   query: string;
+  isLoading: boolean;
   hasError: boolean;
 };
 
@@ -19,6 +19,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     super(props);
     this.state = {
       query: '',
+      isLoading: true,
       hasError: false,
     };
   }
@@ -28,41 +29,56 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState({
       query: queryInLS,
     });
+    this.getData(queryInLS);
   }
 
   handleClickFind = async () => {
     const { query } = this.state;
-    const { setItems } = this.props;
     const queryInLS = getQueryFromLS();
-    if (queryInLS === query.trim()) return;
-    saveNewQueryInLS(query);
-    const data = await getDataFromApi(query);
-    setItems(data);
+    const trimmedQuery = query.trim();
+    if (queryInLS !== trimmedQuery) {
+      this.getData(trimmedQuery);
+    }
   };
 
-  handleQueryChange(event: ChangeEvent<HTMLInputElement>): void {
-    this.setState((prevState) => ({ ...prevState, query: event.target.value }));
+  handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
+    this.setState({ query: event.target.value });
+  };
+
+  handleClickError = () => {
+    this.setState({ hasError: true });
+  };
+
+  getData(query: string) {
+    const { setItems } = this.props;
+    this.setState({ isLoading: true });
+    saveNewQueryInLS(query);
+    getDataFromApi(query).then((data) => {
+      setItems(data);
+      this.setState({ isLoading: false });
+    });
   }
 
-  handleClickError = (): void => {
-    this.setState((prevState) => ({ ...prevState, hasError: true }));
-  };
-
   render() {
-    const { query, hasError } = this.state;
+    const { query, hasError, isLoading } = this.state;
+
+    if (hasError) throw new Error(TEXTS.ERROR_TEXT);
 
     return (
       <header className={styles.header}>
-        {hasError && <ErrorComponent />}
         <input
           type="text"
           className={styles.findInput}
           placeholder={TEXTS.INPUT_PLACEHOLDER}
           value={query}
-          onChange={(e) => this.handleQueryChange(e)}
+          onChange={this.handleQueryChange}
         />
-        <button type="button" onClick={this.handleClickFind}>
-          {TEXTS.BUTTON_FIND}
+        <button
+          type="button"
+          onClick={this.handleClickFind}
+          disabled={isLoading}
+        >
+          {isLoading ? TEXTS.BUTTON_FIND_LOADING : TEXTS.BUTTON_FIND}
         </button>
 
         <button type="button" onClick={this.handleClickError}>

@@ -8,7 +8,9 @@ type ShowData = {
 enum TEXTS {
   INPUT_PLACEHOLDER = 'Поиск по фильмам и сериалам',
   BUTTON_FIND = 'Поиск',
+  BUTTON_FIND_LOADING = 'Загрузка...',
   BUTTON_ERROR = 'Сломать',
+  ERROR_TEXT = 'Все печально!',
 }
 
 export type { ShowData };

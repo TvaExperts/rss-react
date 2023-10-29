@@ -19,12 +19,33 @@ type MyShowsRequest = {
   id: number;
 };
 
-function createRequest(query: string): MyShowsRequest {
+function createFindRequest(query: string): MyShowsRequest {
   return {
     jsonrpc: '2.0',
     method: 'shows.Search',
     params: {
       query,
+    },
+    id: 1,
+  };
+}
+
+function createTopShowsRequest() {
+  return {
+    jsonrpc: '2.0',
+    method: 'shows.Get',
+    params: {
+      search: {
+        network: 0,
+        genre: 0,
+        country: 'string',
+        category: 'string',
+        status: 'string',
+        sort: 'string',
+        query: '*',
+      },
+      page: 0,
+      pageSize: 10,
     },
     id: 1,
   };
@@ -41,7 +62,7 @@ function processData(responseData: MyShowsResponse[]): ShowData[] {
 
 async function getDataFromApi(query: string): Promise<ShowData[]> {
   try {
-    const request = createRequest(query);
+    const request = query ? createFindRequest(query) : createTopShowsRequest();
     const response = await axios.post(API_URL, request);
     return processData(response.data.result);
   } catch (error) {

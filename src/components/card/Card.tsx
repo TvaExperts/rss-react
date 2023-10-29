@@ -14,7 +14,8 @@ export class Card extends React.Component<CardProps> {
   render() {
     const { showData } = this.props;
 
-    const shortDescription = stripHTMLTags(showData.description).slice(0, 50);
+    const shortDescription =
+      showData.description && stripHTMLTags(showData.description).slice(0, 50);
     return (
       <div className={styles.block}>
         <span className={styles.title}>{showData.title} </span>
