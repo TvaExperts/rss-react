@@ -1,11 +1,10 @@
 import React from 'react';
 import { Header } from './components/header/Header';
-import { DataItem } from './types';
+import { ShowData } from './types';
 import { Main } from './components/main/Main';
-import { Footer } from './components/footer/Footer';
 
 type DataState = {
-  items: DataItem[];
+  items: ShowData[];
 };
 
 export class App extends React.Component<object, DataState> {
@@ -14,7 +13,7 @@ export class App extends React.Component<object, DataState> {
     this.state = { items: [] };
   }
 
-  setDataItems = (data: DataItem[]) => {
+  setDataItems = (data: ShowData[]) => {
     this.setState({ items: data });
   };
 
@@ -24,7 +23,6 @@ export class App extends React.Component<object, DataState> {
       <>
         <Header setItems={this.setDataItems} />
         <Main data={items} />
-        <Footer />
       </>
     );
   }

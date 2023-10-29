@@ -1,51 +1,72 @@
-import React from 'react';
-import { DataItem } from '../../types';
-import { getFromLSValue, setNewValueInLS } from '../../services/localStorage';
+import React, { ChangeEvent } from 'react';
+import styles from './Header.module.css';
+import { ShowData, TEXTS } from '../../types';
+import { getQueryFromLS, saveNewQueryInLS } from '../../services/localStorage';
 import { getDataFromApi } from '../../services/api';
+import { ErrorComponent } from '../ErorrComponent';
 
 type HeaderProps = {
-  setItems: (data: DataItem[]) => void;
+  setItems: (data: ShowData[]) => void;
 };
 
 type HeaderState = {
   query: string;
+  hasError: boolean;
 };
 
 export class Header extends React.Component<HeaderProps, HeaderState> {
   constructor(props: HeaderProps) {
     super(props);
     this.state = {
-      query: getFromLSValue(),
+      query: '',
+      hasError: false,
     };
   }
 
   componentDidMount() {
+    const queryInLS = getQueryFromLS();
     this.setState({
-      query: getFromLSValue(),
+      query: queryInLS,
     });
   }
 
   handleClickFind = async () => {
     const { query } = this.state;
     const { setItems } = this.props;
-    setNewValueInLS(query);
+    const queryInLS = getQueryFromLS();
+    if (queryInLS === query.trim()) return;
+    saveNewQueryInLS(query);
     const data = await getDataFromApi(query);
     setItems(data);
   };
 
+  handleQueryChange(event: ChangeEvent<HTMLInputElement>): void {
+    this.setState((prevState) => ({ ...prevState, query: event.target.value }));
+  }
+
+  handleClickError = (): void => {
+    this.setState((prevState) => ({ ...prevState, hasError: true }));
+  };
+
   render() {
-    const { query } = this.state;
+    const { query, hasError } = this.state;
 
     return (
-      <header>
+      <header className={styles.header}>
+        {hasError && <ErrorComponent />}
         <input
           type="text"
-          placeholder="Type query here"
+          className={styles.findInput}
+          placeholder={TEXTS.INPUT_PLACEHOLDER}
           value={query}
-          onChange={(e) => this.setState({ query: e.target.value })}
+          onChange={(e) => this.handleQueryChange(e)}
         />
         <button type="button" onClick={this.handleClickFind}>
-          Find
+          {TEXTS.BUTTON_FIND}
+        </button>
+
+        <button type="button" onClick={this.handleClickError}>
+          {TEXTS.BUTTON_ERROR}
         </button>
       </header>
     );

@@ -1,11 +1,10 @@
-const KEY_IN_LS = 'test';
-
-function getFromLSValue() {
-  return localStorage.getItem(KEY_IN_LS) || '';
-}
-
-function setNewValueInLS(value: string) {
+const KEY_IN_LS = 'module01';
+function saveNewQueryInLS(value: string) {
   localStorage.setItem(KEY_IN_LS, value);
 }
 
-export { getFromLSValue, setNewValueInLS };
+function getQueryFromLS() {
+  return localStorage.getItem(KEY_IN_LS) || '';
+}
+
+export { getQueryFromLS, saveNewQueryInLS };

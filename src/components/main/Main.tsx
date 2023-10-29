@@ -1,9 +1,9 @@
 import React from 'react';
-import { DataItem } from '../../types';
+import { ShowData } from '../../types';
 import { Card } from '../card/Card';
 
 type MainProps = {
-  data: DataItem[];
+  data: ShowData[];
 };
 
 export class Main extends React.Component<MainProps> {
@@ -12,7 +12,7 @@ export class Main extends React.Component<MainProps> {
     return (
       <main>
         {data.map((item) => {
-          return <Card dataItem={item} key={item.id} />;
+          return <Card showData={item} key={item.id} />;
         })}
       </main>
     );
