@@ -6,11 +6,13 @@ type ShowData = {
 };
 
 enum TEXTS {
-  INPUT_PLACEHOLDER = 'Поиск по фильмам и сериалам',
-  BUTTON_FIND = 'Поиск',
-  BUTTON_FIND_LOADING = 'Загрузка...',
-  BUTTON_ERROR = 'Сломать',
-  ERROR_TEXT = 'Все печально!',
+  INPUT_PLACEHOLDER = 'Search by movies and TV series',
+  BUTTON_FIND = 'Search',
+  BUTTON_FIND_LOADING = 'Loading...',
+  BUTTON_ERROR = 'Break',
+  ERROR_TEXT = 'Something went wrong!',
+  MAIN_LOADING = 'Loading data...',
+  NOT_FOUND = 'Nothing was found, make another request',
 }
 
 export type { ShowData };

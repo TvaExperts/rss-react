@@ -5,7 +5,6 @@ import styles from './Card.module.css';
 type CardProps = {
   showData: ShowData;
 };
-
 function stripHTMLTags(text: string) {
   return text.replace(/<[^>]*>/g, '');
 }

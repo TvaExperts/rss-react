@@ -6,11 +6,12 @@ import { getDataFromApi } from '../../services/api';
 
 type HeaderProps = {
   setItems: (data: ShowData[]) => void;
+  setIsLoading: (isLoading: boolean) => void;
+  isLoading: boolean;
 };
 
 type HeaderState = {
   query: string;
-  isLoading: boolean;
   hasError: boolean;
 };
 
@@ -19,7 +20,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     super(props);
     this.state = {
       query: '',
-      isLoading: true,
       hasError: false,
     };
   }
@@ -50,17 +50,18 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   };
 
   getData(query: string) {
-    const { setItems } = this.props;
-    this.setState({ isLoading: true });
+    const { setItems, setIsLoading } = this.props;
+    setIsLoading(true);
     saveNewQueryInLS(query);
     getDataFromApi(query).then((data) => {
       setItems(data);
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     });
   }
 
   render() {
-    const { query, hasError, isLoading } = this.state;
+    const { query, hasError } = this.state;
+    const { isLoading } = this.props;
 
     if (hasError) throw new Error(TEXTS.ERROR_TEXT);
 

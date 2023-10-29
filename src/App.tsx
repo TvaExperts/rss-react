@@ -5,24 +5,33 @@ import { Main } from './components/main/Main';
 
 type DataState = {
   items: ShowData[];
+  isLoading: boolean;
 };
 
 export class App extends React.Component<object, DataState> {
   constructor(props: object) {
     super(props);
-    this.state = { items: [] };
+    this.state = { items: [], isLoading: false };
   }
 
+  setIsLoading = (isLoading: boolean) => {
+    this.setState(() => ({ isLoading }));
+  };
+
   setDataItems = (data: ShowData[]) => {
-    this.setState({ items: data });
+    this.setState(() => ({ items: data }));
   };
 
   render() {
-    const { items } = this.state;
+    const { items, isLoading } = this.state;
     return (
       <>
-        <Header setItems={this.setDataItems} />
-        <Main data={items} />
+        <Header
+          setItems={this.setDataItems}
+          setIsLoading={this.setIsLoading}
+          isLoading={isLoading}
+        />
+        <Main data={items} isLoading={isLoading} />
       </>
     );
   }

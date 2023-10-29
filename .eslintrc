@@ -24,9 +24,7 @@
     "jest": true,
     "node": true
   },
-  "plugins": [
-    "@typescript-eslint", "react", "react-hooks"
-  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks"],
   "rules": {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
@@ -43,7 +41,8 @@
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "import/prefer-default-export": "off",
-    "react/prefer-stateless-function": "off"
+    "react/prefer-stateless-function": "off",
+    "no-console": "off"
   },
   "settings": {
     "react": {
