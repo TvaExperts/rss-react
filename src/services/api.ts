@@ -1,14 +1,34 @@
-import { DataItem } from '../types';
+import axios from 'axios';
 
-const URL =
-  'https://world.openfoodfacts.net/api/v2/search?brands_tags=Nutella&fields=code%2Cproduct_name';
+const URL = 'https://api.myshows.me/v2/rpc/';
+
+type ApiResponse = {
+  id: number;
+  title: string;
+  description: string;
+};
+
+function createBody(query: string) {
+  return {
+    jsonrpc: '2.0',
+    method: 'shows.Search',
+    params: {
+      query,
+    },
+    id: 1,
+  };
+}
 
 async function getDataFromApi(query: string) {
-  const newArray: DataItem[] = [{ name: query, age: query.length }];
-  const res = await fetch(URL, { mode: 'no-cors' });
-  const data = await res.json();
-  console.log(data);
-  return newArray;
+  const response = await axios.post(URL, createBody(query));
+
+  return response.data.result.map((item: ApiResponse) => {
+    return {
+      id: item.id,
+      name: item.title,
+      description: item.description,
+    };
+  });
 }
 
 export { getDataFromApi };

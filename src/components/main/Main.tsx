@@ -12,7 +12,7 @@ export class Main extends React.Component<MainProps> {
     return (
       <main>
         {data.map((item) => {
-          return <Card dataItem={item} key={item.name} />;
+          return <Card dataItem={item} key={item.id} />;
         })}
       </main>
     );

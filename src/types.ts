@@ -1,6 +1,7 @@
 type DataItem = {
+  id: number;
   name: string;
-  age: number;
+  description: string;
 };
 
 export type { DataItem };

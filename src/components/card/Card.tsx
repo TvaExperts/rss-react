@@ -10,7 +10,7 @@ export class Card extends React.Component<CardProps> {
     const { dataItem } = this.props;
     return (
       <div>
-        {dataItem.name} {dataItem.age}
+        {dataItem.name} {dataItem.description}
       </div>
     );
   }
