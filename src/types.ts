@@ -6,10 +6,10 @@ type ShowData = {
 };
 
 enum TEXTS {
-  INPUT_PLACEHOLDER = 'Search by movies and TV series',
+  INPUT_PLACEHOLDER = 'Search by movies and TV shows',
   BUTTON_FIND = 'Search',
   BUTTON_FIND_LOADING = 'Loading...',
-  BUTTON_ERROR = 'Break',
+  NO_CHANGES = 'The request has not changed',
   ERROR_TEXT = 'Something went wrong!',
   MAIN_LOADING = 'Loading data...',
   NOT_FOUND = 'Nothing was found, make another request',

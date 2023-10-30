@@ -1,91 +1,68 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import styles from './Header.module.css';
 import { ShowData, TEXTS } from '../../types';
 import { getQueryFromLS, saveNewQueryInLS } from '../../utils/localStorage';
-import { getDataFromApi } from '../../services/api';
+import { getShowsDataFromApi } from '../../services/api';
 
 type HeaderProps = {
-  setItems: (data: ShowData[]) => void;
+  setShowsData: (data: ShowData[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   isLoading: boolean;
 };
 
-type HeaderState = {
-  query: string;
-  hasError: boolean;
-};
+export function Header({ setShowsData, setIsLoading, isLoading }: HeaderProps) {
+  const queryFromLS = getQueryFromLS();
 
-export class Header extends React.Component<HeaderProps, HeaderState> {
-  constructor(props: HeaderProps) {
-    super(props);
-    this.state = {
-      query: '',
-      hasError: false,
-    };
-  }
+  const [searchQuery, setSearchQuery] = useState<string>(queryFromLS);
+  const [inputText, setInputText] = useState<string>(queryFromLS);
 
-  componentDidMount() {
-    const queryInLS = getQueryFromLS();
-    this.setState({
-      query: queryInLS,
-    });
-    this.getData(queryInLS);
-  }
+  const [hasWarningSameText, setHasWarningSameText] = useState<boolean>(false);
 
-  handleClickFind = async () => {
-    const { query } = this.state;
-    const queryInLS = getQueryFromLS();
-    const trimmedQuery = query.trim();
-    if (queryInLS !== trimmedQuery) {
-      this.getData(trimmedQuery);
-    }
-  };
-
-  handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ query: event.target.value });
-  };
-
-  handleClickError = () => {
-    this.setState({ hasError: true });
-  };
-
-  getData(query: string) {
-    const { setItems, setIsLoading } = this.props;
+  useEffect(() => {
     setIsLoading(true);
-    saveNewQueryInLS(query);
-    getDataFromApi(query).then((data) => {
-      setItems(data);
+    saveNewQueryInLS(searchQuery);
+    getShowsDataFromApi(searchQuery).then((showsData) => {
+      setShowsData(showsData);
       setIsLoading(false);
     });
+  }, [searchQuery, setIsLoading, setShowsData]);
+
+  function handleClickFind() {
+    const trimmedInputText = inputText.trim();
+    if (searchQuery === trimmedInputText) {
+      setHasWarningSameText(true);
+    } else {
+      setSearchQuery(trimmedInputText);
+    }
   }
 
-  render() {
-    const { query, hasError } = this.state;
-    const { isLoading } = this.props;
-
-    if (hasError) throw new Error(TEXTS.ERROR_TEXT);
-
-    return (
-      <header className={styles.header}>
-        <input
-          type="text"
-          className={styles.findInput}
-          placeholder={TEXTS.INPUT_PLACEHOLDER}
-          value={query}
-          onChange={this.handleQueryChange}
-        />
-        <button
-          type="button"
-          onClick={this.handleClickFind}
-          disabled={isLoading}
-        >
-          {isLoading ? TEXTS.BUTTON_FIND_LOADING : TEXTS.BUTTON_FIND}
-        </button>
-
-        <button type="button" onClick={this.handleClickError}>
-          {TEXTS.BUTTON_ERROR}
-        </button>
-      </header>
-    );
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      handleClickFind();
+    }
   }
+
+  function handleInputTextChange(event: ChangeEvent<HTMLInputElement>) {
+    setInputText(event.target.value);
+    if (hasWarningSameText) setHasWarningSameText(false);
+  }
+
+  return (
+    <header className={styles.header}>
+      <input
+        type="text"
+        className={styles.findInput}
+        placeholder={TEXTS.INPUT_PLACEHOLDER}
+        value={inputText}
+        onChange={handleInputTextChange}
+        onKeyDown={handleKeyDown}
+      />
+
+      <button type="button" onClick={handleClickFind} disabled={isLoading}>
+        {isLoading ? TEXTS.BUTTON_FIND_LOADING : TEXTS.BUTTON_FIND}
+      </button>
+
+      {hasWarningSameText && <span>{TEXTS.NO_CHANGES}</span>}
+    </header>
+  );
 }

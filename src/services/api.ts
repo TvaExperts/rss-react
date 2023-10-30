@@ -60,7 +60,7 @@ function processData(responseData: MyShowsResponse[]): ShowData[] {
   }));
 }
 
-async function getDataFromApi(query: string): Promise<ShowData[]> {
+async function getShowsDataFromApi(query: string): Promise<ShowData[]> {
   try {
     const request = query ? createFindRequest(query) : createTopShowsRequest();
     const response = await axios.post(API_URL, request);
@@ -71,4 +71,4 @@ async function getDataFromApi(query: string): Promise<ShowData[]> {
   }
 }
 
-export { getDataFromApi };
+export { getShowsDataFromApi };

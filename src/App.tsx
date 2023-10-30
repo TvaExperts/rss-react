@@ -1,38 +1,20 @@
-import React from 'react';
+import { useState } from 'react';
 import { Header } from './components/header/Header';
 import { ShowData } from './types';
 import { Main } from './components/main/Main';
 
-type DataState = {
-  items: ShowData[];
-  isLoading: boolean;
-};
+export function App() {
+  const [showsData, setShowsData] = useState<ShowData[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-export class App extends React.Component<object, DataState> {
-  constructor(props: object) {
-    super(props);
-    this.state = { items: [], isLoading: false };
-  }
-
-  setIsLoading = (isLoading: boolean) => {
-    this.setState(() => ({ isLoading }));
-  };
-
-  setDataItems = (data: ShowData[]) => {
-    this.setState(() => ({ items: data }));
-  };
-
-  render() {
-    const { items, isLoading } = this.state;
-    return (
-      <>
-        <Header
-          setItems={this.setDataItems}
-          setIsLoading={this.setIsLoading}
-          isLoading={isLoading}
-        />
-        <Main data={items} isLoading={isLoading} />
-      </>
-    );
-  }
+  return (
+    <>
+      <Header
+        setShowsData={setShowsData}
+        setIsLoading={setIsLoading}
+        isLoading={isLoading}
+      />
+      <Main data={showsData} isLoading={isLoading} />
+    </>
+  );
 }

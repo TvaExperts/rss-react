@@ -1,4 +1,4 @@
-const KEY_IN_LS = 'module01';
+const KEY_IN_LS = 'rss-react-course';
 
 function saveNewQueryInLS(value: string) {
   localStorage.setItem(KEY_IN_LS, value);

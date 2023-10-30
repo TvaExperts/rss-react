@@ -7,22 +7,20 @@ type MainProps = {
   isLoading: boolean;
 };
 
-export class Main extends React.Component<MainProps> {
-  render() {
-    const { data, isLoading } = this.props;
-    if (isLoading) {
-      return <main>{TEXTS.MAIN_LOADING}</main>;
-    }
-    return (
-      <main>
-        {data.length ? (
-          data.map((item) => {
-            return <Card showData={item} key={item.id} />;
-          })
-        ) : (
-          <p>{TEXTS.NOT_FOUND}</p>
-        )}
-      </main>
-    );
+export function Main({ data, isLoading }: MainProps) {
+  if (isLoading) {
+    return <main>{TEXTS.MAIN_LOADING}</main>;
   }
+
+  if (!data.length) {
+    return <main>{TEXTS.NOT_FOUND}</main>;
+  }
+
+  return (
+    <main>
+      {data.map((item) => {
+        return <Card showData={item} key={item.id} />;
+      })}
+    </main>
+  );
 }
