@@ -1,13 +1,12 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
+  fallback: ReactNode;
 }
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  error?: Error;
-  errorInfo?: ErrorInfo;
 }
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -16,21 +15,16 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     this.state = { hasError: false };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    this.setState({ hasError: true, error, errorInfo });
+  componentDidCatch() {
+    this.setState({ hasError: true });
   }
 
   render() {
-    const { hasError, error, errorInfo } = this.state;
-    const { children } = this.props;
+    const { hasError } = this.state;
+    const { children, fallback } = this.props;
 
     if (hasError) {
-      return (
-        <>
-          <p>{error?.message}</p>
-          <p>{errorInfo?.componentStack}</p>
-        </>
-      );
+      return fallback;
     }
     return children;
   }

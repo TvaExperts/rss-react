@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import styles from './Header.module.css';
 import { ShowData, TEXTS } from '../../types';
-import { getQueryFromLS, saveNewQueryInLS } from '../../services/localStorage';
+import { getQueryFromLS, saveNewQueryInLS } from '../../utils/localStorage';
 import { getDataFromApi } from '../../services/api';
 
 type HeaderProps = {

@@ -1,4 +1,5 @@
 const KEY_IN_LS = 'module01';
+
 function saveNewQueryInLS(value: string) {
   localStorage.setItem(KEY_IN_LS, value);
 }
