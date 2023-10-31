@@ -1,20 +1,25 @@
-import { useState } from 'react';
-import { Header } from './components/header/Header';
-import { ShowData } from './types';
-import { Main } from './components/main/Main';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import MainLayout from './layouts/MainLayout';
+import Error from './pages/Error';
+import { CardShow } from './components/cardShow/CardShow';
+import './global.css';
 
-export function App() {
-  const [showsData, setShowsData] = useState<ShowData[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+function App() {
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <MainLayout />,
+      errorElement: <Error />,
+      children: [
+        {
+          path: `/:showId`,
+          element: <CardShow />,
+        },
+      ],
+    },
+  ]);
 
-  return (
-    <>
-      <Header
-        setShowsData={setShowsData}
-        setIsLoading={setIsLoading}
-        isLoading={isLoading}
-      />
-      <Main data={showsData} isLoading={isLoading} />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
+
+export default App;

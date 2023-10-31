@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import { ShowData } from '../../types';
-import styles from './Card.module.css';
+import styles from './CardPreview.module.css';
 import { stripHTMLTags } from '../../utils/utils';
 
 const DESCRIPTION_LENGTH = 50;
@@ -8,15 +9,17 @@ type CardProps = {
   showData: ShowData;
 };
 
-export function Card({ showData }: CardProps) {
+export function CardPreview({ showData }: CardProps) {
   const shortDescription =
     showData.description &&
     stripHTMLTags(showData.description).slice(0, DESCRIPTION_LENGTH);
 
   return (
-    <div className={styles.block}>
-      <span className={styles.title}>{showData.title} </span>
+    <li className={styles.block}>
+      <Link to={`/${showData.id}`}>
+        <span className={styles.title}>{showData.title} </span>{' '}
+      </Link>
       {shortDescription ? <span> {shortDescription}...</span> : ''}
-    </div>
+    </li>
   );
 }
