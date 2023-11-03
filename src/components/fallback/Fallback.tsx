@@ -1,4 +1,6 @@
-import { TEXTS } from '../../types';
+enum TEXTS {
+  ERROR_TEXT = 'Something went wrong!',
+}
 
 function handleClickReloadPage() {
   window.location.reload();

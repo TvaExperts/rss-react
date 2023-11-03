@@ -1,5 +1,6 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import styles from './CardList.module.css';
 import { CardPreview } from '../cardPreview/CardPreview';
 import { ShowData } from '../../types';
 
@@ -14,9 +15,11 @@ function CardList({ data }: CardListProps) {
     if (pathname !== '/') navigate(-1);
   }
 
+  const { showId } = useParams<'showId'>();
+
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
-    <ul onClick={handleClick}>
+    <ul onClick={handleClick} className={showId ? styles.shade : ''}>
       {data.map((item) => {
         return <CardPreview showData={item} key={item.id} />;
       })}

@@ -1,8 +1,15 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import styles from './Header.module.css';
-import { ShowData, TEXTS } from '../../types';
+import { ShowData } from '../../types';
 import { getQueryFromLS, saveNewQueryInLS } from '../../utils/localStorage';
 import { getShowsDataFromApi } from '../../services/api';
+
+enum TEXTS {
+  INPUT_PLACEHOLDER = 'Search by movies and TV shows',
+  BUTTON_FIND = 'Search',
+  BUTTON_FIND_LOADING = 'Loading...',
+  NO_CHANGES = 'The request has not changed',
+}
 
 type HeaderProps = {
   setShowsData: (data: ShowData[]) => void;

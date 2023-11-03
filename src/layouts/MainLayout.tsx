@@ -18,7 +18,7 @@ function MainLayout() {
       />
 
       <main className={styles.main}>
-        <Home data={showsData} isLoading={isLoading} />
+        <Home showsData={showsData} isLoading={isLoading} />
         <Outlet />
       </main>
     </>

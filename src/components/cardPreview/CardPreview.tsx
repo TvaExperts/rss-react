@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ShowData } from '../../types';
 import styles from './CardPreview.module.css';
 import { stripHTMLTags } from '../../utils/utils';
@@ -14,9 +14,10 @@ export function CardPreview({ showData }: CardProps) {
     showData.description &&
     stripHTMLTags(showData.description).slice(0, DESCRIPTION_LENGTH);
 
+  const [queryParams] = useSearchParams();
   return (
     <li className={styles.block}>
-      <Link to={`/${showData.id}`}>
+      <Link to={`/${showData.id}?${queryParams.toString()}`}>
         <span className={styles.title}>{showData.title} </span>{' '}
       </Link>
       {shortDescription ? <span> {shortDescription}...</span> : ''}
