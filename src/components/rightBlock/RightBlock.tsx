@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import styles from './CardShow.module.css';
+import styles from './RightBlock.module.css';
 
-export function CardShow() {
+export function RightBlock() {
   const { showId } = useParams<'showId'>();
   const navigate = useNavigate();
 
@@ -10,7 +10,7 @@ export function CardShow() {
   }
 
   return (
-    <div className={styles.block}>
+    <div className={styles.rightBlock}>
       <p>{showId}</p>
       <button type="button" onClick={handleClose}>
         Close

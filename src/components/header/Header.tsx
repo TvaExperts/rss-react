@@ -1,46 +1,52 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styles from './Header.module.css';
-import { ShowData } from '../../types';
+import { Product } from '../../types';
 import { getQueryFromLS, saveNewQueryInLS } from '../../utils/localStorage';
-import { getShowsDataFromApi } from '../../services/api';
+import { getProductsFromApi } from '../../services/api';
+import { DEFAULT_LIMIT } from '../../constants/searchParams';
 
 enum TEXTS {
   INPUT_PLACEHOLDER = 'Search by movies and TV shows',
   BUTTON_FIND = 'Search',
   BUTTON_FIND_LOADING = 'Loading...',
-  NO_CHANGES = 'The request has not changed',
 }
 
 type HeaderProps = {
-  setShowsData: (data: ShowData[]) => void;
+  setShowsData: (data: Product[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   isLoading: boolean;
 };
 
 export function Header({ setShowsData, setIsLoading, isLoading }: HeaderProps) {
-  const queryFromLS = getQueryFromLS();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState<string>(queryFromLS);
-  const [inputText, setInputText] = useState<string>(queryFromLS);
+  const queryInSearchParams = searchParams.get('query');
 
-  const [hasWarningSameText, setHasWarningSameText] = useState<boolean>(false);
+  const [queryParam, setQueryParam] = useState<string>(
+    queryInSearchParams || getQueryFromLS()
+  );
+
+  const [inputText, setInputText] = useState<string>(queryParam);
+
+  const limitValue = Number(searchParams.get('limit')) || DEFAULT_LIMIT;
+  const offsetValue = Number(searchParams.get('offset')) || 0;
 
   useEffect(() => {
     setIsLoading(true);
-    saveNewQueryInLS(searchQuery);
-    getShowsDataFromApi(searchQuery).then((showsData) => {
-      setShowsData(showsData);
+    saveNewQueryInLS(queryParam);
+    getProductsFromApi(queryParam, limitValue, offsetValue).then((products) => {
+      setShowsData(products);
       setIsLoading(false);
     });
-  }, [searchQuery, setIsLoading, setShowsData]);
+  }, [queryParam, setIsLoading, setShowsData, limitValue, offsetValue]);
 
   function handleClickFind() {
     const trimmedInputText = inputText.trim();
-    if (searchQuery === trimmedInputText) {
-      setHasWarningSameText(true);
-    } else {
-      setSearchQuery(trimmedInputText);
-    }
+    setQueryParam(trimmedInputText);
+    searchParams.set('query', trimmedInputText);
+    searchParams.set('offset', '0');
+    setSearchParams(searchParams);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -51,7 +57,6 @@ export function Header({ setShowsData, setIsLoading, isLoading }: HeaderProps) {
 
   function handleInputTextChange(event: ChangeEvent<HTMLInputElement>) {
     setInputText(event.target.value);
-    if (hasWarningSameText) setHasWarningSameText(false);
   }
 
   return (
@@ -68,8 +73,6 @@ export function Header({ setShowsData, setIsLoading, isLoading }: HeaderProps) {
       <button type="button" onClick={handleClickFind} disabled={isLoading}>
         {isLoading ? TEXTS.BUTTON_FIND_LOADING : TEXTS.BUTTON_FIND}
       </button>
-
-      {hasWarningSameText && <span>{TEXTS.NO_CHANGES}</span>}
     </header>
   );
 }

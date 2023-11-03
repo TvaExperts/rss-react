@@ -1,12 +1,12 @@
 import { Link, useSearchParams } from 'react-router-dom';
-import { ShowData } from '../../types';
+import { Product } from '../../types';
 import styles from './CardPreview.module.css';
 import { stripHTMLTags } from '../../utils/utils';
 
 const DESCRIPTION_LENGTH = 50;
 
 type CardProps = {
-  showData: ShowData;
+  showData: Product;
 };
 
 export function CardPreview({ showData }: CardProps) {

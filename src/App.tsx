@@ -1,19 +1,19 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
-import Error from './pages/Error';
-import { CardShow } from './components/cardShow/CardShow';
+import { RightBlock } from './components/rightBlock/RightBlock';
 import './global.css';
+import { Fallback } from './components/fallback/Fallback';
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
       element: <MainLayout />,
-      errorElement: <Error />,
+      errorElement: <Fallback />,
       children: [
         {
           path: `/:showId`,
-          element: <CardShow />,
+          element: <RightBlock />,
         },
       ],
     },

@@ -1,8 +1,8 @@
-type ShowData = {
+type Product = {
   id: number;
   title: string;
   description: string;
-  imgUrl: string;
+  images: string[];
 };
 
-export type { ShowData };
+export type { Product };
