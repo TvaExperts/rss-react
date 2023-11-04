@@ -1,9 +1,33 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useRef } from 'react';
+import {
+  Await,
+  defer,
+  LoaderFunctionArgs,
+  useLoaderData,
+  useNavigate,
+} from 'react-router-dom';
+import React, { useRef } from 'react';
 import styles from './RightBlock.module.css';
 
+import { Product } from '../../types';
+import { getProductPromise } from '../../services/api';
+
+type ProductResponse = {
+  data: Product;
+};
+
+type LoaderData = {
+  productResponsePromise: Promise<ProductResponse>;
+};
+
+export async function loaderDetails({ params }: LoaderFunctionArgs) {
+  return defer({
+    productResponsePromise: getProductPromise(params.productId || ''),
+  });
+}
+
 export function RightBlock() {
-  const { showId } = useParams<'showId'>();
+  const loaderData = useLoaderData() as LoaderData;
+
   const navigate = useNavigate();
 
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -21,10 +45,25 @@ export function RightBlock() {
       role="presentation"
     >
       <article className={styles.rightBlock}>
-        <p>{showId}</p>
-        <button type="button" onClick={() => handleCloseBlock()}>
-          Close
-        </button>
+        <React.Suspense fallback={<p>Loading...</p>}>
+          <Await
+            resolve={loaderData.productResponsePromise}
+            errorElement={<p>Error loading product data!</p>}
+          >
+            {(productResponse: ProductResponse) => {
+              const { title, description } = productResponse.data;
+              return (
+                <>
+                  <p>{title}</p>
+                  <p>{description}</p>
+                  <button type="button" onClick={() => handleCloseBlock()}>
+                    Close
+                  </button>
+                </>
+              );
+            }}
+          </Await>
+        </React.Suspense>
       </article>
     </div>
   );
