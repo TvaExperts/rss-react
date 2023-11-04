@@ -4,17 +4,9 @@ import { Product } from '../types';
 const API_URL = 'https://dummyjson.com/products';
 
 type ProductApiResponse = {
+  total: number;
   products: Product[];
 };
-
-function processData(responseData: ProductApiResponse): Product[] {
-  return responseData.products.map((item) => ({
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    images: item.images,
-  }));
-}
 
 function createSearchParamsPartURL(
   limit?: number,
@@ -34,17 +26,15 @@ async function getProductsFromApi(
   query?: string,
   limit?: number,
   offset?: number
-): Promise<Product[]> {
+): Promise<ProductApiResponse> {
   try {
     const searchParamsPartURL = createSearchParamsPartURL(limit, offset, query);
 
     const requestUrl = query
       ? `${API_URL}/search${searchParamsPartURL}`
       : `${API_URL}${searchParamsPartURL}`;
-
     const response = await axios.get(requestUrl);
-
-    return processData(response.data);
+    return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
     throw error;
@@ -52,3 +42,4 @@ async function getProductsFromApi(
 }
 
 export { getProductsFromApi };
+export type { ProductApiResponse };

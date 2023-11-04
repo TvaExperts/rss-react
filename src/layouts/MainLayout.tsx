@@ -11,23 +11,25 @@ enum TEXTS {
 }
 
 function MainLayout() {
-  const [showsData, setShowsData] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <>
       <Header
-        setShowsData={setShowsData}
+        setProducts={setProducts}
         setIsLoading={setIsLoading}
         isLoading={isLoading}
+        setTotalProducts={setTotalProducts}
       />
 
       <main className={styles.main}>
         {isLoading && TEXTS.MAIN_LOADING}
-        {!isLoading && !showsData?.length && TEXTS.NOT_FOUND}
-        {!isLoading && showsData?.length > 0 && (
+        {!isLoading && !products?.length && TEXTS.NOT_FOUND}
+        {!isLoading && products?.length > 0 && (
           <>
-            <LeftBlock showsData={showsData} />
+            <LeftBlock products={products} totalProducts={totalProducts} />
             <Outlet />
           </>
         )}

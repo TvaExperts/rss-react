@@ -7,18 +7,24 @@ import { getProductsFromApi } from '../../services/api';
 import { DEFAULT_LIMIT } from '../../constants/searchParams';
 
 enum TEXTS {
-  INPUT_PLACEHOLDER = 'Search by movies and TV shows',
+  INPUT_PLACEHOLDER = 'Product search',
   BUTTON_FIND = 'Search',
   BUTTON_FIND_LOADING = 'Loading...',
 }
 
 type HeaderProps = {
-  setShowsData: (data: Product[]) => void;
+  setProducts: (data: Product[]) => void;
   setIsLoading: (isLoading: boolean) => void;
+  setTotalProducts: (totalProducts: number) => void;
   isLoading: boolean;
 };
 
-export function Header({ setShowsData, setIsLoading, isLoading }: HeaderProps) {
+export function Header({
+  setProducts,
+  setIsLoading,
+  isLoading,
+  setTotalProducts,
+}: HeaderProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queryInSearchParams = searchParams.get('query');
@@ -35,11 +41,21 @@ export function Header({ setShowsData, setIsLoading, isLoading }: HeaderProps) {
   useEffect(() => {
     setIsLoading(true);
     saveNewQueryInLS(queryParam);
-    getProductsFromApi(queryParam, limitValue, offsetValue).then((products) => {
-      setShowsData(products);
-      setIsLoading(false);
-    });
-  }, [queryParam, setIsLoading, setShowsData, limitValue, offsetValue]);
+    getProductsFromApi(queryParam, limitValue, offsetValue).then(
+      (productApiResponse) => {
+        setTotalProducts(productApiResponse.total);
+        setProducts(productApiResponse.products);
+        setIsLoading(false);
+      }
+    );
+  }, [
+    queryParam,
+    setIsLoading,
+    limitValue,
+    offsetValue,
+    setTotalProducts,
+    setProducts,
+  ]);
 
   function handleClickFind() {
     const trimmedInputText = inputText.trim();
@@ -70,7 +86,12 @@ export function Header({ setShowsData, setIsLoading, isLoading }: HeaderProps) {
         onKeyDown={handleKeyDown}
       />
 
-      <button type="button" onClick={handleClickFind} disabled={isLoading}>
+      <button
+        type="button"
+        onClick={handleClickFind}
+        disabled={isLoading}
+        className={styles.buttonSearch}
+      >
         {isLoading ? TEXTS.BUTTON_FIND_LOADING : TEXTS.BUTTON_FIND}
       </button>
     </header>

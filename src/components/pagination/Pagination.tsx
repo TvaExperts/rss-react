@@ -4,14 +4,21 @@ import styles from './Pagination.module.css';
 import { DEFAULT_LIMIT } from '../../constants/searchParams';
 
 type PaginationProps = {
-  total: number;
+  totalProducts: number;
 };
 
-function Pagination({ total }: PaginationProps) {
+function Pagination({ totalProducts }: PaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  console.log(total);
+
   const limitParam = Number(searchParams.get('limit')) || DEFAULT_LIMIT;
+  const offsetParam = Number(searchParams.get('offset')) || 0;
+
+  const currentPageNumber = Math.floor(offsetParam / limitParam) + 1;
+
+  const highestPageNumber = Math.ceil(totalProducts / limitParam);
+
+  console.log(highestPageNumber, totalProducts, limitParam);
 
   function handleGoToPage(pageNumber: number) {
     searchParams.set('offset', ((pageNumber - 1) * limitParam).toString());
@@ -25,19 +32,49 @@ function Pagination({ total }: PaginationProps) {
   }
 
   return (
-    <div className={styles.pagination}>
-      <button type="button" onClick={() => handleGoToPage(1)}>
-        1
-      </button>
-      <button type="button" onClick={() => handleGoToPage(2)}>
-        2
-      </button>
-      <select onChange={handleChangeCountOfItems} defaultValue={limitParam}>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-      </select>
-    </div>
+    <>
+      <div className={styles.pagination}>
+        <button
+          type="button"
+          onClick={() => handleGoToPage(1)}
+          disabled={currentPageNumber === 1}
+        >
+          &#60;&#60;
+        </button>
+        <button
+          type="button"
+          onClick={() => handleGoToPage(currentPageNumber - 1)}
+          disabled={currentPageNumber === 1}
+        >
+          &#60;
+        </button>
+        <p>{currentPageNumber}</p>
+        <button
+          type="button"
+          onClick={() => handleGoToPage(currentPageNumber + 1)}
+          disabled={currentPageNumber === highestPageNumber}
+        >
+          &#62;
+        </button>
+        <button
+          type="button"
+          onClick={() => handleGoToPage(highestPageNumber)}
+          disabled={currentPageNumber === highestPageNumber}
+        >
+          &#62;&#62;
+        </button>
+        <select onChange={handleChangeCountOfItems} defaultValue={limitParam}>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+      <div
+        className={styles.summary}
+      >{`${totalProducts} products found. Presented on ${highestPageNumber} page${
+        highestPageNumber > 1 ? 's' : ''
+      }`}</div>
+    </>
   );
 }
 
