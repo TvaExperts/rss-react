@@ -2,6 +2,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Product } from '../../types';
 import styles from './CardPreview.module.css';
 import { stripHTMLTags } from '../../utils/utils';
+import { ROUTS } from '../../routs/routs';
 
 const DESCRIPTION_LENGTH = 50;
 
@@ -17,7 +18,7 @@ export function CardPreview({ showData }: CardProps) {
   const [queryParams] = useSearchParams();
   return (
     <li className={styles.block}>
-      <Link to={`/${showData.id}?${queryParams.toString()}`}>
+      <Link to={`${ROUTS.PRODUCT}/${showData.id}?${queryParams.toString()}`}>
         <span className={styles.title}>{showData.title} </span>{' '}
       </Link>
       {shortDescription ? <span> {shortDescription}...</span> : ''}

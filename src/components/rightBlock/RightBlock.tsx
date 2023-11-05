@@ -4,19 +4,16 @@ import {
   LoaderFunctionArgs,
   useLoaderData,
   useNavigate,
+  useSearchParams,
 } from 'react-router-dom';
 import React, { useRef } from 'react';
 import styles from './RightBlock.module.css';
 
-import { Product } from '../../types';
-import { getProductPromise } from '../../services/api';
-
-type ProductResponse = {
-  data: Product;
-};
+import { getProductPromise, ProductApiResponse } from '../../services/api';
+import { ROUTS } from '../../routs/routs';
 
 type LoaderData = {
-  productResponsePromise: Promise<ProductResponse>;
+  productResponsePromise: Promise<ProductApiResponse>;
 };
 
 export async function loaderDetails({ params }: LoaderFunctionArgs) {
@@ -29,12 +26,13 @@ export function RightBlock() {
   const loaderData = useLoaderData() as LoaderData;
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const overlayRef = useRef<HTMLDivElement>(null);
 
   function handleCloseBlock(eventTarget?: EventTarget) {
     if (eventTarget && eventTarget !== overlayRef.current) return;
-    navigate(-1);
+    navigate(`${ROUTS.HOME}?${searchParams.toString()}`);
   }
 
   return (
@@ -50,11 +48,11 @@ export function RightBlock() {
             resolve={loaderData.productResponsePromise}
             errorElement={<p>Error loading product data!</p>}
           >
-            {(productResponse: ProductResponse) => {
-              const { title, description } = productResponse.data;
+            {(productApiResponse: ProductApiResponse) => {
+              const { title, description } = productApiResponse.data;
               return (
                 <>
-                  <p>{title}</p>
+                  <h2>{title}</h2>
                   <p>{description}</p>
                   <button type="button" onClick={() => handleCloseBlock()}>
                     Close
