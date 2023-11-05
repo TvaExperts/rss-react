@@ -13,14 +13,14 @@ type ProductApiResponse = {
 };
 
 function createSearchParamsPartURL(
-  limit?: number,
-  offset?: number,
+  limit?: string,
+  offset?: string,
   query?: string
 ) {
   const searchParams = new URLSearchParams();
 
-  if (limit !== undefined) searchParams.set('limit', limit.toString());
-  if (offset !== undefined) searchParams.set('skip', offset.toString());
+  if (limit !== undefined) searchParams.set('limit', limit);
+  if (offset !== undefined) searchParams.set('skip', offset);
   if (query?.length) searchParams.set('q', query);
 
   return searchParams.size ? `?${searchParams.toString()}` : '';
@@ -28,8 +28,8 @@ function createSearchParamsPartURL(
 
 async function getProductsFromApi(
   query?: string,
-  limit?: number,
-  offset?: number
+  limit?: string,
+  offset?: string
 ): Promise<ProductsApiResponse> {
   try {
     const searchParamsPartURL = createSearchParamsPartURL(limit, offset, query);

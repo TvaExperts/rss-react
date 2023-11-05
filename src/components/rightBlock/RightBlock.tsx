@@ -49,11 +49,13 @@ export function RightBlock() {
             errorElement={<p>Error loading product data!</p>}
           >
             {(productApiResponse: ProductApiResponse) => {
-              const { title, description } = productApiResponse.data;
+              const { title, description, images } = productApiResponse.data;
               return (
                 <>
                   <h2>{title}</h2>
                   <p>{description}</p>
+                  <img src={images[0]} alt={title} />
+                  <br />
                   <button type="button" onClick={() => handleCloseBlock()}>
                     Close
                   </button>

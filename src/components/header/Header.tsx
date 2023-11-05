@@ -1,10 +1,12 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './Header.module.css';
 import { Product } from '../../types';
 import { getQueryFromLS, saveNewQueryInLS } from '../../utils/localStorage';
 import { getProductsFromApi } from '../../services/api';
 import { DEFAULT_LIMIT } from '../../constants/searchParams';
+import { ROUTS } from '../../routs/routs';
+import { SEARCH_PARAMETERS } from '../../routs/searchParameters';
 
 enum TEXTS {
   INPUT_PLACEHOLDER = 'Product search',
@@ -25,18 +27,26 @@ export function Header({
   isLoading,
   setTotalProducts,
 }: HeaderProps) {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const queryInSearchParams = searchParams.get('query');
-
   const [queryParam, setQueryParam] = useState<string>(
-    queryInSearchParams || getQueryFromLS()
+    searchParams.get(SEARCH_PARAMETERS.QUERY) || getQueryFromLS()
   );
+
+  useEffect(() => {
+    if (queryParam !== '') {
+      searchParams.set(SEARCH_PARAMETERS.QUERY, queryParam);
+      navigate(`${ROUTS.HOME}?${searchParams.toString()}`);
+    }
+  }, [navigate, queryParam, searchParams]);
 
   const [inputText, setInputText] = useState<string>(queryParam);
 
-  const limitValue = Number(searchParams.get('limit')) || DEFAULT_LIMIT;
-  const offsetValue = Number(searchParams.get('offset')) || 0;
+  const limitValue =
+    searchParams.get(SEARCH_PARAMETERS.LIMIT) || DEFAULT_LIMIT.toString();
+
+  const offsetValue = searchParams.get(SEARCH_PARAMETERS.OFFSET) || '0';
 
   useEffect(() => {
     setIsLoading(true);
@@ -60,8 +70,8 @@ export function Header({
   function handleClickFind() {
     const trimmedInputText = inputText.trim();
     setQueryParam(trimmedInputText);
-    searchParams.set('query', trimmedInputText);
-    searchParams.set('offset', '0');
+    searchParams.set(SEARCH_PARAMETERS.QUERY, trimmedInputText);
+    searchParams.set(SEARCH_PARAMETERS.OFFSET, '0');
     setSearchParams(searchParams);
   }
 
@@ -90,7 +100,7 @@ export function Header({
         type="button"
         onClick={handleClickFind}
         disabled={isLoading}
-        className={styles.buttonSearch}
+        className={styles.headerButton}
       >
         {isLoading ? TEXTS.BUTTON_FIND_LOADING : TEXTS.BUTTON_FIND}
       </button>
