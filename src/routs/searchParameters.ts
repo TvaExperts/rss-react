@@ -1,8 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
-enum SEARCH_PARAMETERS {
-  OFFSET = 'offset',
-  LIMIT = 'limit',
-  QUERY = 'query',
-}
+const SEARCH_PARAMETERS = {
+  offset: 'offset',
+  limit: 'limit',
+  query: 'query',
+} as const;
 
 export { SEARCH_PARAMETERS };

@@ -23,7 +23,7 @@ function createSearchParamsPartURL(
   if (offset !== undefined) searchParams.set('skip', offset);
   if (query?.length) searchParams.set('q', query);
 
-  return searchParams.size ? `?${searchParams.toString()}` : '';
+  return searchParams.size ? `${searchParams.toString()}` : '';
 }
 
 async function getProductsFromApi(
@@ -35,9 +35,11 @@ async function getProductsFromApi(
     const searchParamsPartURL = createSearchParamsPartURL(limit, offset, query);
 
     const requestUrl = query
-      ? `${API_URL}/search${searchParamsPartURL}`
-      : `${API_URL}${searchParamsPartURL}`;
+      ? `${API_URL}/search?${searchParamsPartURL}`
+      : `${API_URL}?${searchParamsPartURL}`;
+
     const response = await axios.get(requestUrl);
+
     return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -46,12 +48,7 @@ async function getProductsFromApi(
 }
 
 function getProductPromise(id: string): Promise<ProductApiResponse> {
-  try {
-    return axios.get(`${API_URL}/${id}`);
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
-  }
+  return axios.get(`${API_URL}/${id}`);
 }
 
 export { getProductsFromApi, getProductPromise };

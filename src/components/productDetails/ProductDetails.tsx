@@ -7,22 +7,28 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import React, { useRef } from 'react';
-import styles from './RightBlock.module.css';
+import styles from './ProductDetails.module.css';
 
 import { getProductPromise, ProductApiResponse } from '../../services/api';
 import { ROUTS } from '../../routs/routs';
+
+enum TEXTS {
+  LOADING = 'Loading...',
+  LOADING_ERROR = 'Error loading product data!',
+  BUTTON_CLOSE = 'Close',
+}
 
 type LoaderData = {
   productResponsePromise: Promise<ProductApiResponse>;
 };
 
-export async function loaderDetails({ params }: LoaderFunctionArgs) {
+export async function loaderProductDetails({ params }: LoaderFunctionArgs) {
   return defer({
     productResponsePromise: getProductPromise(params.productId || ''),
   });
 }
 
-export function RightBlock() {
+export function ProductDetails() {
   const loaderData = useLoaderData() as LoaderData;
 
   const navigate = useNavigate();
@@ -30,23 +36,26 @@ export function RightBlock() {
 
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  function handleCloseBlock(eventTarget?: EventTarget) {
-    if (eventTarget && eventTarget !== overlayRef.current) return;
-    navigate(`${ROUTS.HOME}?${searchParams.toString()}`);
+  function handleCloseDetails() {
+    navigate(`${ROUTS.home}?${searchParams.toString()}`);
+  }
+
+  function handleClickOverlay(eventTarget: EventTarget) {
+    if (eventTarget === overlayRef.current) handleCloseDetails();
   }
 
   return (
     <div
       className={styles.overlay}
-      onClick={(e) => handleCloseBlock(e.target)}
+      onClick={(e) => handleClickOverlay(e.target)}
       ref={overlayRef}
       role="presentation"
     >
-      <article className={styles.rightBlock}>
-        <React.Suspense fallback={<p>Loading...</p>}>
+      <article className={styles.productDetails}>
+        <React.Suspense fallback={<p>{TEXTS.LOADING}</p>}>
           <Await
             resolve={loaderData.productResponsePromise}
-            errorElement={<p>Error loading product data!</p>}
+            errorElement={<p>{TEXTS.LOADING_ERROR}</p>}
           >
             {(productApiResponse: ProductApiResponse) => {
               const { title, description, images } = productApiResponse.data;
@@ -56,8 +65,8 @@ export function RightBlock() {
                   <p>{description}</p>
                   <img src={images[0]} alt={title} />
                   <br />
-                  <button type="button" onClick={() => handleCloseBlock()}>
-                    Close
+                  <button type="button" onClick={handleCloseDetails}>
+                    {TEXTS.BUTTON_CLOSE}
                   </button>
                 </>
               );

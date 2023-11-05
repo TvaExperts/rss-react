@@ -1,4 +1,4 @@
-.block {
+.listItem {
   background-color: beige;
   border: aqua solid 1px;
   padding: 10px;
@@ -9,4 +9,5 @@
 
 .title {
   font-weight: 700;
+  color: blue;
 }

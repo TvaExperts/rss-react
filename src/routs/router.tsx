@@ -1,20 +1,23 @@
 import { createBrowserRouter } from 'react-router-dom';
-import MainLayout from '../layouts/MainLayout';
+import RootLayout from '../layouts/RootLayout';
 import { Fallback } from '../components/fallback/Fallback';
-import { loaderDetails, RightBlock } from '../components/rightBlock/RightBlock';
+import {
+  loaderProductDetails,
+  ProductDetails,
+} from '../components/productDetails/ProductDetails';
 import { ROUTS } from './routs';
 
 const router = createBrowserRouter([
   {
-    path: ROUTS.HOME,
-    element: <MainLayout />,
+    path: ROUTS.home,
+    element: <RootLayout />,
     errorElement: <Fallback />,
 
     children: [
       {
-        path: `${ROUTS.PRODUCT}/:productId`,
-        loader: loaderDetails,
-        element: <RightBlock />,
+        path: `${ROUTS.product}/:productId`,
+        loader: loaderProductDetails,
+        element: <ProductDetails />,
       },
     ],
   },

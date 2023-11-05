@@ -1,6 +1,6 @@
-enum ROUTS {
-  HOME = '/',
-  PRODUCT = '/product',
-}
+const ROUTS = {
+  home: '/',
+  product: '/product',
+} as const;
 
 export { ROUTS };

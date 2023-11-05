@@ -5,6 +5,10 @@
   padding: 10px;
 }
 
+.navigationButton {
+  width: 30px;
+}
+
 .summary {
   text-align: center;
 }

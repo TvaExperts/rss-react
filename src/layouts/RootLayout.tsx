@@ -1,16 +1,16 @@
 import { Outlet } from 'react-router-dom';
 import React, { useState } from 'react';
-import styles from './MainLayout.module.css';
+import styles from './RootLayout.module.css';
 import { Header } from '../components/header/Header';
 import { Product } from '../types';
-import LeftBlock from '../components/leftBlock/LeftBlock';
+import ProductList from '../components/productList/ProductList';
 
 enum TEXTS {
-  MAIN_LOADING = 'Loading data...',
+  LOADING = 'Loading data...',
   NOT_FOUND = 'Nothing was found, make another request',
 }
 
-function MainLayout() {
+function RootLayout() {
   const [products, setProducts] = useState<Product[]>([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -19,17 +19,17 @@ function MainLayout() {
     <>
       <Header
         setProducts={setProducts}
-        setIsLoading={setIsLoading}
-        isLoading={isLoading}
         setTotalProducts={setTotalProducts}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
       />
 
       <main className={styles.main}>
-        {isLoading && TEXTS.MAIN_LOADING}
-        {!isLoading && !products?.length && TEXTS.NOT_FOUND}
-        {!isLoading && products?.length > 0 && (
+        {isLoading && TEXTS.LOADING}
+        {!isLoading && totalProducts === 0 && TEXTS.NOT_FOUND}
+        {!isLoading && totalProducts > 0 && (
           <>
-            <LeftBlock products={products} totalProducts={totalProducts} />
+            <ProductList products={products} totalProducts={totalProducts} />
             <Outlet />
           </>
         )}
@@ -38,4 +38,4 @@ function MainLayout() {
   );
 }
 
-export default MainLayout;
+export default RootLayout;

@@ -1,5 +1,6 @@
 enum TEXTS {
   ERROR_TEXT = 'Something went wrong!',
+  RELOAD_BUTTON = 'Reload page',
 }
 
 function handleClickReloadPage() {
@@ -11,7 +12,7 @@ export function Fallback() {
     <main>
       <p>{TEXTS.ERROR_TEXT}</p>
       <button type="button" onClick={handleClickReloadPage}>
-        Reload page
+        {TEXTS.RELOAD_BUTTON}
       </button>
     </main>
   );
