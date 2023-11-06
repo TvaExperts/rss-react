@@ -1,91 +1,102 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styles from './Header.module.css';
-import { ShowData, TEXTS } from '../../types';
+import { Product } from '../../types';
 import { getQueryFromLS, saveNewQueryInLS } from '../../utils/localStorage';
-import { getDataFromApi } from '../../services/api';
+import { getProductsFromApi } from '../../services/api';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants/searchParams';
+import { SEARCH_PARAMETERS } from '../../routs/searchParameters';
+
+enum TEXTS {
+  INPUT_PLACEHOLDER = 'Product search',
+  BUTTON_SEARCH = 'Search',
+  BUTTON_SEARCH_LOADING = 'Loading...',
+}
 
 type HeaderProps = {
-  setItems: (data: ShowData[]) => void;
+  setProducts: (data: Product[]) => void;
   setIsLoading: (isLoading: boolean) => void;
+  setTotalProducts: (totalProducts: number) => void;
   isLoading: boolean;
 };
 
-type HeaderState = {
-  query: string;
-  hasError: boolean;
-};
+export function Header({
+  setProducts,
+  setIsLoading,
+  isLoading,
+  setTotalProducts,
+}: HeaderProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
 
-export class Header extends React.Component<HeaderProps, HeaderState> {
-  constructor(props: HeaderProps) {
-    super(props);
-    this.state = {
-      query: '',
-      hasError: false,
-    };
-  }
+  const [queryParam, setQueryParam] = useState<string>(
+    searchParams.get(SEARCH_PARAMETERS.query) || getQueryFromLS()
+  );
 
-  componentDidMount() {
-    const queryInLS = getQueryFromLS();
-    this.setState({
-      query: queryInLS,
-    });
-    this.getData(queryInLS);
-  }
+  const limit =
+    searchParams.get(SEARCH_PARAMETERS.limit) || DEFAULT_LIMIT.toString();
 
-  handleClickFind = async () => {
-    const { query } = this.state;
-    const queryInLS = getQueryFromLS();
-    const trimmedQuery = query.trim();
-    if (queryInLS !== trimmedQuery) {
-      this.getData(trimmedQuery);
+  const offset =
+    searchParams.get(SEARCH_PARAMETERS.offset) || DEFAULT_OFFSET.toString();
+
+  const [inputText, setInputText] = useState<string>(queryParam);
+
+  useEffect(() => {
+    if (queryParam !== '' && !searchParams.get(SEARCH_PARAMETERS.query)) {
+      searchParams.set(SEARCH_PARAMETERS.query, queryParam);
+      setSearchParams(searchParams);
     }
-  };
+  }, [queryParam, searchParams, setSearchParams]);
 
-  handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ query: event.target.value });
-  };
-
-  handleClickError = () => {
-    this.setState({ hasError: true });
-  };
-
-  getData(query: string) {
-    const { setItems, setIsLoading } = this.props;
+  useEffect(() => {
     setIsLoading(true);
-    saveNewQueryInLS(query);
-    getDataFromApi(query).then((data) => {
-      setItems(data);
+    saveNewQueryInLS(queryParam);
+    getProductsFromApi(queryParam, limit, offset).then((productApiResponse) => {
+      setTotalProducts(productApiResponse.total);
+      setProducts(productApiResponse.products);
       setIsLoading(false);
     });
+  }, [queryParam, setIsLoading, limit, offset, setTotalProducts, setProducts]);
+
+  function handleClickSearch() {
+    const trimmedInputText = inputText.trim();
+    setQueryParam(trimmedInputText);
+    searchParams.set(SEARCH_PARAMETERS.query, trimmedInputText);
+    searchParams.set(SEARCH_PARAMETERS.offset, DEFAULT_OFFSET.toString());
+    if (!searchParams.get(SEARCH_PARAMETERS.limit)) {
+      searchParams.set(SEARCH_PARAMETERS.limit, limit);
+    }
+    setSearchParams(searchParams);
   }
 
-  render() {
-    const { query, hasError } = this.state;
-    const { isLoading } = this.props;
-
-    if (hasError) throw new Error(TEXTS.ERROR_TEXT);
-
-    return (
-      <header className={styles.header}>
-        <input
-          type="text"
-          className={styles.findInput}
-          placeholder={TEXTS.INPUT_PLACEHOLDER}
-          value={query}
-          onChange={this.handleQueryChange}
-        />
-        <button
-          type="button"
-          onClick={this.handleClickFind}
-          disabled={isLoading}
-        >
-          {isLoading ? TEXTS.BUTTON_FIND_LOADING : TEXTS.BUTTON_FIND}
-        </button>
-
-        <button type="button" onClick={this.handleClickError}>
-          {TEXTS.BUTTON_ERROR}
-        </button>
-      </header>
-    );
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      handleClickSearch();
+    }
   }
+
+  function handleInputTextChange(event: ChangeEvent<HTMLInputElement>) {
+    setInputText(event.target.value);
+  }
+
+  return (
+    <header className={styles.header}>
+      <input
+        type="text"
+        className={styles.findInput}
+        placeholder={TEXTS.INPUT_PLACEHOLDER}
+        value={inputText}
+        onChange={handleInputTextChange}
+        onKeyDown={handleKeyDown}
+      />
+
+      <button
+        type="button"
+        onClick={handleClickSearch}
+        disabled={isLoading}
+        className={styles.searchButton}
+      >
+        {isLoading ? TEXTS.BUTTON_SEARCH_LOADING : TEXTS.BUTTON_SEARCH}
+      </button>
+    </header>
+  );
 }

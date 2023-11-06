@@ -1,19 +1,19 @@
-import React from 'react';
-import { TEXTS } from '../../types';
+enum TEXTS {
+  ERROR_TEXT = 'Something went wrong!',
+  RELOAD_BUTTON = 'Reload page',
+}
 
-function handleReloadPage() {
+function handleClickReloadPage() {
   window.location.reload();
 }
 
-export class Fallback extends React.Component {
-  render() {
-    return (
-      <main>
-        <p>{TEXTS.ERROR_TEXT}</p>
-        <button type="button" onClick={handleReloadPage}>
-          Reload
-        </button>
-      </main>
-    );
-  }
+export function Fallback() {
+  return (
+    <main>
+      <p>{TEXTS.ERROR_TEXT}</p>
+      <button type="button" onClick={handleClickReloadPage}>
+        {TEXTS.RELOAD_BUTTON}
+      </button>
+    </main>
+  );
 }
