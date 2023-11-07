@@ -34,7 +34,7 @@ type AppActions =
 function appReducer(state: AppState, action: AppActions) {
   switch (action.type) {
     case ActionTypes.setQuery: {
-      return { ...state, query: action.payload };
+      return { ...state, query: action.payload, offset: DEFAULT_OFFSET };
     }
     case ActionTypes.setProducts: {
       const { products, total } = action.payload;

@@ -1,9 +1,10 @@
-import { Outlet } from 'react-router-dom';
-import React, { useContext, useState } from 'react';
+import { Outlet, useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import styles from './RootLayout.module.css';
 import { Header } from '../components/header/Header';
 import ProductList from '../components/productList/ProductList';
-import { AppContext } from '../context/AppProvider';
+import { useAppContext } from '../hooks/useAppContext';
+import { useAppSearchParams } from '../hooks/useAppSearchParams';
 
 enum TEXTS {
   LOADING = 'Loading data...',
@@ -12,7 +13,16 @@ enum TEXTS {
 
 function RootLayout() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { total } = useContext(AppContext).state;
+  const { total } = useAppContext().state;
+
+  const filledParams = useAppSearchParams();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    setSearchParams(filledParams);
+  }, [filledParams, searchParams.size, setSearchParams]);
+
   return (
     <>
       <Header isLoading={isLoading} setIsLoading={setIsLoading} />
