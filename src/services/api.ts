@@ -52,4 +52,4 @@ function getProductPromise(id: string): Promise<ProductApiResponse> {
 }
 
 export { getProductsFromApi, getProductPromise };
-export type { ProductApiResponse };
+export type { ProductApiResponse, ProductsApiResponse };

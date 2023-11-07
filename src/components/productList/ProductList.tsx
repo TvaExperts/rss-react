@@ -1,17 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ListItem } from '../listItem/ListItem';
-import { Product } from '../../types';
 import Pagination from '../pagination/Pagination';
 import styles from './ProductList.module.css';
+import { AppContext } from '../../context/AppProvider';
 
-type ProductListProps = {
-  products: Product[];
-  totalProducts: number;
-};
-function ProductList({ products, totalProducts }: ProductListProps) {
+function ProductList() {
+  const { products } = useContext(AppContext).state;
   return (
     <div className={styles.productListBlock}>
-      <Pagination totalProducts={totalProducts} />
+      <Pagination />
       <ul>
         {products.map((product) => {
           return <ListItem product={product} key={product.id} />;

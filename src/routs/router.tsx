@@ -12,7 +12,6 @@ const router = createBrowserRouter([
     path: ROUTS.home,
     element: <RootLayout />,
     errorElement: <Fallback />,
-
     children: [
       {
         path: `${ROUTS.product}/:productId`,

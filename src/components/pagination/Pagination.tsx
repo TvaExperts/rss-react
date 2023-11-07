@@ -1,14 +1,12 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styles from './Pagination.module.css';
 import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants/searchParams';
 import { SEARCH_PARAMETERS } from '../../routs/searchParameters';
+import { AppContext } from '../../context/AppProvider';
 
-type PaginationProps = {
-  totalProducts: number;
-};
-
-function Pagination({ totalProducts }: PaginationProps) {
+function Pagination() {
+  const { total } = useContext(AppContext).state;
   const [searchParams, setSearchParams] = useSearchParams();
 
   const limit =
@@ -16,7 +14,7 @@ function Pagination({ totalProducts }: PaginationProps) {
   const offset = Number(searchParams.get(SEARCH_PARAMETERS.offset)) || 0;
 
   const currentPageNumber = Math.floor(offset / limit) + 1;
-  const highestPageNumber = Math.ceil(totalProducts / limit);
+  const highestPageNumber = Math.ceil(total / limit);
 
   function handleGoToPage(pageNumber: number) {
     searchParams.set(
@@ -77,8 +75,8 @@ function Pagination({ totalProducts }: PaginationProps) {
           <option value="20">20</option>
         </select>
       </div>
-      <div className={styles.summary}>{`${totalProducts} product${
-        totalProducts > 1 ? 's' : ''
+      <div className={styles.summary}>{`${total} product${
+        total > 1 ? 's' : ''
       } found. Presented on ${highestPageNumber} page${
         highestPageNumber > 1 ? 's' : ''
       }`}</div>

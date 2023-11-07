@@ -1,11 +1,12 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styles from './Header.module.css';
-import { Product } from '../../types';
 import { getQueryFromLS, saveNewQueryInLS } from '../../utils/localStorage';
 import { getProductsFromApi } from '../../services/api';
 import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants/searchParams';
 import { SEARCH_PARAMETERS } from '../../routs/searchParameters';
+import { AppContext } from '../../context/AppProvider';
+import { ActionTypes } from '../../reducers/appReducer';
 
 enum TEXTS {
   INPUT_PLACEHOLDER = 'Product search',
@@ -14,19 +15,13 @@ enum TEXTS {
 }
 
 type HeaderProps = {
-  setProducts: (data: Product[]) => void;
   setIsLoading: (isLoading: boolean) => void;
-  setTotalProducts: (totalProducts: number) => void;
   isLoading: boolean;
 };
 
-export function Header({
-  setProducts,
-  setIsLoading,
-  isLoading,
-  setTotalProducts,
-}: HeaderProps) {
+export function Header({ setIsLoading, isLoading }: HeaderProps) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { dispatch } = useContext(AppContext);
 
   const [queryParam, setQueryParam] = useState<string>(
     searchParams.get(SEARCH_PARAMETERS.query) || getQueryFromLS()
@@ -51,17 +46,17 @@ export function Header({
     setIsLoading(true);
     saveNewQueryInLS(queryParam);
     getProductsFromApi(queryParam, limit, offset).then((productApiResponse) => {
-      setTotalProducts(productApiResponse.total);
-      setProducts(productApiResponse.products);
+      dispatch({ type: ActionTypes.setProducts, payload: productApiResponse });
       setIsLoading(false);
     });
-  }, [queryParam, setIsLoading, limit, offset, setTotalProducts, setProducts]);
+  }, [queryParam, setIsLoading, limit, offset, dispatch]);
 
   function handleClickSearch() {
     const trimmedInputText = inputText.trim();
     setQueryParam(trimmedInputText);
     searchParams.set(SEARCH_PARAMETERS.query, trimmedInputText);
     searchParams.set(SEARCH_PARAMETERS.offset, DEFAULT_OFFSET.toString());
+    dispatch({ type: ActionTypes.setQuery, payload: trimmedInputText });
     if (!searchParams.get(SEARCH_PARAMETERS.limit)) {
       searchParams.set(SEARCH_PARAMETERS.limit, limit);
     }
