@@ -19,11 +19,12 @@ type HeaderProps = {
 export function Header({ setIsLoading, isLoading }: HeaderProps) {
   const { state, dispatch } = useAppContext();
   const { query, limit, offset } = state;
-
   const [inputText, setInputText] = useState<string>(query);
 
   useEffect(() => {
+    if (!limit) return;
     setIsLoading(true);
+    setInputText(query);
     saveNewQueryInLS(query);
     getProductsFromApi(query, limit, offset).then((productApiResponse) => {
       dispatch({ type: ActionTypes.setProducts, payload: productApiResponse });
@@ -32,8 +33,7 @@ export function Header({ setIsLoading, isLoading }: HeaderProps) {
   }, [query, setIsLoading, limit, offset, dispatch]);
 
   function handleClickSearch() {
-    const trimmedInputText = inputText.trim();
-    dispatch({ type: ActionTypes.setQuery, payload: trimmedInputText });
+    dispatch({ type: ActionTypes.setQuery, payload: inputText.trim() });
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {

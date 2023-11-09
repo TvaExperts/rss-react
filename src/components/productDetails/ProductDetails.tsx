@@ -4,13 +4,13 @@ import {
   LoaderFunctionArgs,
   useLoaderData,
   useNavigate,
-  useSearchParams,
 } from 'react-router-dom';
 import React, { useRef } from 'react';
 import styles from './ProductDetails.module.css';
 
 import { getProductPromise, ProductApiResponse } from '../../services/api';
 import { ROUTS } from '../../routs/routs';
+import { useAppSearchParams } from '../../hooks/useAppSearchParams';
 
 enum TEXTS {
   LOADING = 'Loading...',
@@ -32,7 +32,7 @@ export function ProductDetails() {
   const loaderData = useLoaderData() as LoaderData;
 
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const searchParams = useAppSearchParams();
 
   const overlayRef = useRef<HTMLDivElement>(null);
 

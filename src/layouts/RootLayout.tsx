@@ -1,10 +1,12 @@
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import styles from './RootLayout.module.css';
 import { Header } from '../components/header/Header';
 import ProductList from '../components/productList/ProductList';
 import { useAppContext } from '../hooks/useAppContext';
 import { useAppSearchParams } from '../hooks/useAppSearchParams';
+import { ActionTypes } from '../reducers/appReducer';
+import { ROUTS } from '../routs/routs';
 
 enum TEXTS {
   LOADING = 'Loading data...',
@@ -13,15 +15,30 @@ enum TEXTS {
 
 function RootLayout() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { total } = useAppContext().state;
+  const [hasInitSearchParams, setHasInitSearchParams] =
+    useState<boolean>(false);
 
-  const filledParams = useAppSearchParams();
+  const { state, dispatch } = useAppContext();
+  const { total } = state;
+
+  const { pathname } = useLocation();
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const filledParams = useAppSearchParams();
 
   useEffect(() => {
-    setSearchParams(filledParams);
-  }, [filledParams, searchParams.size, setSearchParams]);
+    if (!hasInitSearchParams) {
+      dispatch({
+        type: ActionTypes.setSearchParamsFromUrl,
+        payload: searchParams,
+      });
+      setHasInitSearchParams(true);
+    }
+  }, [dispatch, hasInitSearchParams, searchParams]);
+
+  useEffect(() => {
+    if (pathname === ROUTS.home) setSearchParams(filledParams);
+  }, [filledParams, pathname, setSearchParams]);
 
   return (
     <>

@@ -22,4 +22,4 @@ const router = createBrowserRouter([
   },
 ]);
 
-export { router, ROUTS };
+export { router };

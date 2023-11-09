@@ -1,14 +1,13 @@
 import React, { createContext, useMemo, useReducer } from 'react';
 import { AppActions, appReducer, AppState } from '../reducers/appReducer';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants/searchParams';
 import { getQueryFromLS } from '../utils/localStorage';
 
 const initialState: AppState = {
   total: 0,
   products: [],
   query: getQueryFromLS() || '',
-  limit: DEFAULT_LIMIT,
-  offset: DEFAULT_OFFSET,
+  limit: 0,
+  offset: 0,
 };
 
 type AppProviderProps = {
