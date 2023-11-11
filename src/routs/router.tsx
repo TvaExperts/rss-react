@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import RootLayout from '../layouts/RootLayout';
 import { Fallback } from '../components/fallback/Fallback';
 import {
@@ -9,7 +9,7 @@ import { ROUTS } from './routs';
 import Home from '../pages/home/Home';
 import NoMatch from '../pages/noMatch/NoMatch';
 
-const router = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     path: ROUTS.home,
     element: <RootLayout />,
@@ -29,6 +29,8 @@ const router = createBrowserRouter([
       { path: '*', element: <NoMatch /> },
     ],
   },
-]);
+];
 
-export { router };
+const router = createBrowserRouter(routes);
+
+export { router, routes };

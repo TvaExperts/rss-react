@@ -51,8 +51,10 @@ export function ProductDetails() {
       ref={overlayRef}
       role="presentation"
     >
-      <article className={styles.productDetails}>
-        <React.Suspense fallback={<p>{TEXTS.LOADING}</p>}>
+      <article className={styles.productDetails} data-testid="product-details">
+        <React.Suspense
+          fallback={<p data-testid="details-loading">{TEXTS.LOADING}</p>}
+        >
           <Await
             resolve={loaderData.productResponsePromise}
             errorElement={<p>{TEXTS.LOADING_ERROR}</p>}
@@ -65,7 +67,11 @@ export function ProductDetails() {
                   <p>{description}</p>
                   <img src={images[0]} alt={title} />
                   <br />
-                  <button type="button" onClick={handleCloseDetails}>
+                  <button
+                    type="button"
+                    onClick={handleCloseDetails}
+                    data-testid="details-close"
+                  >
                     {TEXTS.BUTTON_CLOSE}
                   </button>
                 </>

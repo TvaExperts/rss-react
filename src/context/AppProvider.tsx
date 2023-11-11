@@ -24,7 +24,6 @@ export const AppContext = createContext<{
 
 export function AppProvider({ children }: AppProviderProps) {
   const [state, dispatch] = useReducer(appReducer, initialState);
-
   const contextValue = useMemo(() => ({ state, dispatch }), [state]);
 
   return (
