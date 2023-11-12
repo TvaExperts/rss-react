@@ -6,15 +6,14 @@ import { useAppContext } from '../../hooks/useAppContext';
 
 function Pagination() {
   const { state, dispatch } = useAppContext();
-  const { total, limit, offset } = state;
+  const { total, limit, page } = state;
 
-  const currentPageNumber = Math.floor(offset / limit) + 1;
   const highestPageNumber = Math.ceil(total / limit);
 
   function handleGoToPage(pageNumber: number) {
     dispatch({
-      type: ActionTypes.changeOffset,
-      payload: (pageNumber - 1) * limit,
+      type: ActionTypes.changePage,
+      payload: pageNumber,
     });
   }
 
@@ -32,24 +31,24 @@ function Pagination() {
           type="button"
           className={styles.navigationButton}
           onClick={() => handleGoToPage(1)}
-          disabled={currentPageNumber <= 1}
+          disabled={page <= 1}
         >
           &#60;&#60;
         </button>
         <button
           type="button"
           className={styles.navigationButton}
-          onClick={() => handleGoToPage(currentPageNumber - 1)}
-          disabled={currentPageNumber <= 1}
+          onClick={() => handleGoToPage(page - 1)}
+          disabled={page <= 1}
         >
           &#60;
         </button>
-        <p>{currentPageNumber}</p>
+        <p>{page}</p>
         <button
           type="button"
           className={styles.navigationButton}
-          onClick={() => handleGoToPage(currentPageNumber + 1)}
-          disabled={currentPageNumber >= highestPageNumber}
+          onClick={() => handleGoToPage(page + 1)}
+          disabled={page >= highestPageNumber}
         >
           &#62;
         </button>
@@ -57,7 +56,7 @@ function Pagination() {
           type="button"
           className={styles.navigationButton}
           onClick={() => handleGoToPage(highestPageNumber)}
-          disabled={currentPageNumber >= highestPageNumber}
+          disabled={page >= highestPageNumber}
         >
           &#62;&#62;
         </button>

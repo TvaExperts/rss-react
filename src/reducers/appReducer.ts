@@ -1,6 +1,6 @@
 import { Product } from '../types';
 import { ProductsApiResponse } from '../services/api';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants/searchParams';
+import { DEFAULT_LIMIT } from '../constants/searchParams';
 import { SEARCH_PARAMETERS } from '../routs/searchParameters';
 
 type AppState = {
@@ -8,14 +8,14 @@ type AppState = {
   total: number;
   query: string;
   limit: number;
-  offset: number;
+  page: number;
 };
 
 enum ActionTypes {
   setProducts = 'addProducts',
   setQuery = 'addQuery',
   changeLimit = 'changeLimit',
-  changeOffset = 'changeOffset',
+  changePage = 'changePage',
   setSearchParamsFromUrl = 'setSearchParamsFromUrl',
 }
 
@@ -29,7 +29,7 @@ type AppActions =
       payload: string;
     }
   | {
-      type: ActionTypes.changeLimit | ActionTypes.changeOffset;
+      type: ActionTypes.changeLimit | ActionTypes.changePage;
       payload: number;
     }
   | {
@@ -40,17 +40,17 @@ type AppActions =
 function appReducer(state: AppState, action: AppActions) {
   switch (action.type) {
     case ActionTypes.setQuery: {
-      return { ...state, query: action.payload, offset: DEFAULT_OFFSET };
+      return { ...state, query: action.payload, page: 1 };
     }
     case ActionTypes.setProducts: {
       const { products, total } = action.payload;
       return { ...state, products, total };
     }
-    case ActionTypes.changeOffset: {
-      return { ...state, offset: action.payload };
+    case ActionTypes.changePage: {
+      return { ...state, page: action.payload };
     }
     case ActionTypes.changeLimit: {
-      return { ...state, limit: action.payload, offset: DEFAULT_OFFSET };
+      return { ...state, limit: action.payload, page: 1 };
     }
     case ActionTypes.setSearchParamsFromUrl: {
       const searchParams = action.payload;
@@ -67,17 +67,12 @@ function appReducer(state: AppState, action: AppActions) {
         newState.limit = DEFAULT_LIMIT;
       }
 
-      if (searchParams.get(SEARCH_PARAMETERS.offset)) {
-        newState.offset =
-          Number(searchParams.get(SEARCH_PARAMETERS.offset)) || DEFAULT_OFFSET;
+      if (searchParams.get(SEARCH_PARAMETERS.page)) {
+        newState.page = Number(searchParams.get(SEARCH_PARAMETERS.page)) || 1;
       } else {
-        newState.offset = DEFAULT_OFFSET;
+        newState.page = 1;
       }
 
-      if (searchParams.get(SEARCH_PARAMETERS.offset) !== null) {
-        newState.offset =
-          Number(searchParams.get(SEARCH_PARAMETERS.offset)) || DEFAULT_OFFSET;
-      }
       return newState;
     }
     default:

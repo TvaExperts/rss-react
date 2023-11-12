@@ -39,7 +39,7 @@ describe('Tests for the Card component', () => {
       element: <ListItem product={mockProduct} />,
       path: '/',
     };
-    const { getByRole } = renderWithRouter(routerObject, '/', routes);
+    const { getByRole } = renderWithRouter(routerObject, routes);
 
     const linkElement = getByRole('link');
     await userEvent.click(linkElement);
@@ -53,7 +53,7 @@ describe('Tests for the Card component', () => {
       path: '/',
     };
 
-    const { getByRole } = renderWithRouter(routerObject, '/', routes);
+    const { getByRole } = renderWithRouter(routerObject, routes);
 
     const spyAxiosGet = vi.spyOn(axios, 'get');
 

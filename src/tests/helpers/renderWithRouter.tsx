@@ -8,8 +8,8 @@ import {
 
 export function renderWithRouter(
   routeObject: RouteObject | null,
-  path: string = '/',
-  routes: RouteObject[] = []
+  routes: RouteObject[] = [],
+  path: string = '/'
 ) {
   const allRoutes = routeObject ? [routeObject, ...routes] : [...routes];
 

@@ -1,5 +1,5 @@
 const SEARCH_PARAMETERS = {
-  offset: 'offset',
+  page: 'page',
   limit: 'limit',
   query: 'query',
 } as const;

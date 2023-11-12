@@ -2,12 +2,12 @@ import React, { createContext, useMemo, useReducer } from 'react';
 import { AppActions, appReducer, AppState } from '../reducers/appReducer';
 import { getQueryFromLS } from '../utils/localStorage';
 
-const initialState: AppState = {
+export const initialState: AppState = {
   total: 0,
   products: [],
   query: getQueryFromLS() || '',
   limit: 0,
-  offset: 0,
+  page: 1,
 };
 
 type AppProviderProps = {

@@ -1,31 +1,27 @@
-import React, { isValidElement } from 'react';
+import React from 'react';
 import { render } from '@testing-library/react';
 import {
   createMemoryRouter,
   RouteObject,
   RouterProvider,
 } from 'react-router-dom';
-import { AppActions, AppState } from '../../reducers/appReducer';
+import { AppActions } from '../../reducers/appReducer';
 
-import { AppContext } from '../../context/AppProvider';
-
-import { initialState } from '../mocks/mockInitialState';
+import { AppContext, initialState } from '../../context/AppProvider';
 
 export function renderWithRouterAndContext(
-  component: React.ReactNode,
-  state: AppState = initialState,
-  path: string = '/',
-  routes: RouteObject[] = []
+  routeObject: RouteObject | null,
+  routes: RouteObject[] = [],
+  path: string = '/'
 ) {
-  if (!isValidElement(component)) throw new Error('Invalid React Element');
+  const allRoutes = routeObject ? [routeObject, ...routes] : [...routes];
 
-  const route = { element: component, path };
-
-  const router = createMemoryRouter([route, ...routes], {
+  const router = createMemoryRouter(allRoutes, {
     initialEntries: [path],
   });
+
   const mockDispatch: React.Dispatch<AppActions> = () => null;
-  const value = { state, dispatch: mockDispatch };
+  const value = { state: initialState, dispatch: mockDispatch };
 
   return render(
     <AppContext.Provider value={value}>

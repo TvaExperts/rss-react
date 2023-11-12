@@ -1,4 +1,3 @@
 const DEFAULT_LIMIT = 10;
-const DEFAULT_OFFSET = 0;
 
-export { DEFAULT_LIMIT, DEFAULT_OFFSET };
+export { DEFAULT_LIMIT };

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Product } from '../types';
+import { DEFAULT_LIMIT } from '../constants/searchParams';
 
 const API_URL = 'https://dummyjson.com/products';
 
@@ -14,13 +15,17 @@ type ProductApiResponse = {
 
 function createSearchParamsPartURL(
   limit?: number,
-  offset?: number,
+  page?: number,
   query?: string
 ) {
   const searchParams = new URLSearchParams();
 
   if (limit !== undefined) searchParams.set('limit', limit.toString());
-  if (offset !== undefined) searchParams.set('skip', offset.toString());
+  if (page !== undefined)
+    searchParams.set(
+      'skip',
+      ((page - 1) * (limit || DEFAULT_LIMIT)).toString()
+    );
   if (query?.length) searchParams.set('q', query);
 
   return searchParams.size ? `${searchParams.toString()}` : '';
@@ -29,10 +34,10 @@ function createSearchParamsPartURL(
 async function getProductsFromApi(
   query?: string,
   limit?: number,
-  offset?: number
+  page?: number
 ): Promise<ProductsApiResponse> {
   try {
-    const searchParamsPartURL = createSearchParamsPartURL(limit, offset, query);
+    const searchParamsPartURL = createSearchParamsPartURL(limit, page, query);
 
     const requestUrl = query
       ? `${API_URL}/search?${searchParamsPartURL}`

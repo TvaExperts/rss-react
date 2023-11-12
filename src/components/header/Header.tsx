@@ -18,7 +18,7 @@ type HeaderProps = {
 
 export function Header({ setIsLoading, isLoading }: HeaderProps) {
   const { state, dispatch } = useAppContext();
-  const { query, limit, offset } = state;
+  const { query, limit, page } = state;
   const [inputText, setInputText] = useState<string>(query);
 
   useEffect(() => {
@@ -26,11 +26,11 @@ export function Header({ setIsLoading, isLoading }: HeaderProps) {
     setIsLoading(true);
     setInputText(query);
     saveNewQueryInLS(query);
-    getProductsFromApi(query, limit, offset).then((productApiResponse) => {
+    getProductsFromApi(query, limit, page).then((productApiResponse) => {
       dispatch({ type: ActionTypes.setProducts, payload: productApiResponse });
       setIsLoading(false);
     });
-  }, [query, setIsLoading, limit, offset, dispatch]);
+  }, [query, limit, page, dispatch, setIsLoading]);
 
   function handleClickSearch() {
     dispatch({ type: ActionTypes.setQuery, payload: inputText.trim() });
