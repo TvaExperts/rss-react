@@ -63,8 +63,8 @@ export function ProductDetails() {
               const { title, description, images } = productApiResponse.data;
               return (
                 <>
-                  <h2>{title}</h2>
-                  <p>{description}</p>
+                  <h2 data-testid="product-title">{title}</h2>
+                  <p data-testid="product-description">{description}</p>
                   <img src={images[0]} alt={title} />
                   <br />
                   <button

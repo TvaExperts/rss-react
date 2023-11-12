@@ -5,14 +5,15 @@ import {
   RouteObject,
   RouterProvider,
 } from 'react-router-dom';
-import { AppActions } from '../../reducers/appReducer';
+import { AppActions, AppState } from '../../reducers/appReducer';
 
 import { AppContext, initialState } from '../../context/AppProvider';
 
 export function renderWithRouterAndContext(
   routeObject: RouteObject | null,
   routes: RouteObject[] = [],
-  path: string = '/'
+  path: string = '/',
+  state: AppState = initialState
 ) {
   const allRoutes = routeObject ? [routeObject, ...routes] : [...routes];
 
@@ -21,7 +22,7 @@ export function renderWithRouterAndContext(
   });
 
   const mockDispatch: React.Dispatch<AppActions> = () => null;
-  const value = { state: initialState, dispatch: mockDispatch };
+  const value = { state, dispatch: mockDispatch };
 
   return render(
     <AppContext.Provider value={value}>

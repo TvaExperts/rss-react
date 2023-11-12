@@ -36,6 +36,20 @@ describe('Tests for the Detailed Card component', () => {
     expect(loadingElement).toBeInTheDocument();
   });
 
+  it('Make sure the detailed card component correctly displays the detailed card data', async () => {
+    const { findByTestId } = renderWithRouter(
+      null,
+      routes,
+      `${ROUTS.product}/:${mockProduct.id}`
+    );
+
+    const title = await findByTestId('product-title');
+    const description = await findByTestId('product-description');
+
+    expect(title.textContent).toBe(mockProduct.title);
+    expect(description.textContent).toBe(mockProduct.description);
+  });
+
   it('Should close page when click button close ', async () => {
     renderWithRouter(null, routes, `${ROUTS.product}/${mockProduct.id}`);
 

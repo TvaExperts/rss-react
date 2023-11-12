@@ -57,21 +57,4 @@ describe('Tests for the Card component', () => {
     const detailsElement = await screen.findByTestId('product-details');
     expect(detailsElement).toBeInTheDocument();
   });
-
-  // it('Should additionally send an api request when you click on the card title and go to the product page', async () => {
-  //
-  // const routerObject: RouteObject = {
-  //   element: <ListItem product={mockProduct} />,
-  //   path: '/',
-  // };
-  //
-  // const { getByRole } = renderWithRouter(routerObject, routes);
-  //
-  // const spyAxiosGet = vi.spyOn(axios, 'get');
-  //
-  // const linkElement = getByRole('link');
-  // await userEvent.click(linkElement);
-  //
-  // expect(spyAxiosGet).toHaveBeenCalledTimes(1);
-  // });
 });

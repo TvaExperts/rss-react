@@ -49,6 +49,7 @@ function Pagination() {
           className={styles.navigationButton}
           onClick={() => handleGoToPage(page + 1)}
           disabled={page >= highestPageNumber}
+          data-testid="next-page"
         >
           &#62;
         </button>

@@ -55,6 +55,7 @@ export function Header({ setIsLoading, isLoading }: HeaderProps) {
         value={inputText}
         onChange={handleInputTextChange}
         onKeyDown={handleKeyDown}
+        data-testid="search-input"
       />
 
       <button
@@ -62,6 +63,7 @@ export function Header({ setIsLoading, isLoading }: HeaderProps) {
         onClick={handleClickSearch}
         disabled={isLoading}
         className={styles.searchButton}
+        data-testid="search-button"
       >
         {isLoading ? TEXTS.BUTTON_SEARCH_LOADING : TEXTS.BUTTON_SEARCH}
       </button>
