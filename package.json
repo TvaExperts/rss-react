@@ -51,7 +51,6 @@
     ],
     "src/**/*.{ts,tsx,css,scss,md}": [
       "npm run format:fix"
-    ],
-    "src/**/*.test.tsx": "npm run test"
+    ]
   }
 }
