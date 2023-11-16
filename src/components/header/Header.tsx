@@ -1,11 +1,9 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import styles from './Header.module.css';
-import { Product } from '../../types';
-import { getQueryFromLS, saveNewQueryInLS } from '../../utils/localStorage';
+import { saveNewQueryInLS } from '../../utils/localStorage';
 import { getProductsFromApi } from '../../services/api';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants/searchParams';
-import { SEARCH_PARAMETERS } from '../../routs/searchParameters';
+import { ActionTypes } from '../../reducers/appReducer';
+import { useAppContext } from '../../hooks/useAppContext';
 
 enum TEXTS {
   INPUT_PLACEHOLDER = 'Product search',
@@ -14,58 +12,28 @@ enum TEXTS {
 }
 
 type HeaderProps = {
-  setProducts: (data: Product[]) => void;
   setIsLoading: (isLoading: boolean) => void;
-  setTotalProducts: (totalProducts: number) => void;
   isLoading: boolean;
 };
 
-export function Header({
-  setProducts,
-  setIsLoading,
-  isLoading,
-  setTotalProducts,
-}: HeaderProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [queryParam, setQueryParam] = useState<string>(
-    searchParams.get(SEARCH_PARAMETERS.query) || getQueryFromLS()
-  );
-
-  const limit =
-    searchParams.get(SEARCH_PARAMETERS.limit) || DEFAULT_LIMIT.toString();
-
-  const offset =
-    searchParams.get(SEARCH_PARAMETERS.offset) || DEFAULT_OFFSET.toString();
-
-  const [inputText, setInputText] = useState<string>(queryParam);
+export function Header({ setIsLoading, isLoading }: HeaderProps) {
+  const { state, dispatch } = useAppContext();
+  const { query, limit, page } = state;
+  const [inputText, setInputText] = useState<string>(query);
 
   useEffect(() => {
-    if (queryParam !== '' && !searchParams.get(SEARCH_PARAMETERS.query)) {
-      searchParams.set(SEARCH_PARAMETERS.query, queryParam);
-      setSearchParams(searchParams);
-    }
-  }, [queryParam, searchParams, setSearchParams]);
-
-  useEffect(() => {
+    if (!limit) return;
     setIsLoading(true);
-    saveNewQueryInLS(queryParam);
-    getProductsFromApi(queryParam, limit, offset).then((productApiResponse) => {
-      setTotalProducts(productApiResponse.total);
-      setProducts(productApiResponse.products);
+    setInputText(query);
+    saveNewQueryInLS(query);
+    getProductsFromApi(query, limit, page).then((productApiResponse) => {
+      dispatch({ type: ActionTypes.setProducts, payload: productApiResponse });
       setIsLoading(false);
     });
-  }, [queryParam, setIsLoading, limit, offset, setTotalProducts, setProducts]);
+  }, [query, limit, page, dispatch, setIsLoading]);
 
   function handleClickSearch() {
-    const trimmedInputText = inputText.trim();
-    setQueryParam(trimmedInputText);
-    searchParams.set(SEARCH_PARAMETERS.query, trimmedInputText);
-    searchParams.set(SEARCH_PARAMETERS.offset, DEFAULT_OFFSET.toString());
-    if (!searchParams.get(SEARCH_PARAMETERS.limit)) {
-      searchParams.set(SEARCH_PARAMETERS.limit, limit);
-    }
-    setSearchParams(searchParams);
+    dispatch({ type: ActionTypes.setQuery, payload: inputText.trim() });
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -87,6 +55,7 @@ export function Header({
         value={inputText}
         onChange={handleInputTextChange}
         onKeyDown={handleKeyDown}
+        data-testid="search-input"
       />
 
       <button
@@ -94,6 +63,7 @@ export function Header({
         onClick={handleClickSearch}
         disabled={isLoading}
         className={styles.searchButton}
+        data-testid="search-button"
       >
         {isLoading ? TEXTS.BUTTON_SEARCH_LOADING : TEXTS.BUTTON_SEARCH}
       </button>

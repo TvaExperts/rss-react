@@ -4,13 +4,13 @@ import {
   LoaderFunctionArgs,
   useLoaderData,
   useNavigate,
-  useSearchParams,
 } from 'react-router-dom';
 import React, { useRef } from 'react';
 import styles from './ProductDetails.module.css';
 
 import { getProductPromise, ProductApiResponse } from '../../services/api';
 import { ROUTS } from '../../routs/routs';
+import { useAppSearchParams } from '../../hooks/useAppSearchParams';
 
 enum TEXTS {
   LOADING = 'Loading...',
@@ -32,7 +32,7 @@ export function ProductDetails() {
   const loaderData = useLoaderData() as LoaderData;
 
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const searchParams = useAppSearchParams();
 
   const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -51,8 +51,10 @@ export function ProductDetails() {
       ref={overlayRef}
       role="presentation"
     >
-      <article className={styles.productDetails}>
-        <React.Suspense fallback={<p>{TEXTS.LOADING}</p>}>
+      <article className={styles.productDetails} data-testid="product-details">
+        <React.Suspense
+          fallback={<p data-testid="details-loading">{TEXTS.LOADING}</p>}
+        >
           <Await
             resolve={loaderData.productResponsePromise}
             errorElement={<p>{TEXTS.LOADING_ERROR}</p>}
@@ -61,11 +63,15 @@ export function ProductDetails() {
               const { title, description, images } = productApiResponse.data;
               return (
                 <>
-                  <h2>{title}</h2>
-                  <p>{description}</p>
+                  <h2 data-testid="product-title">{title}</h2>
+                  <p data-testid="product-description">{description}</p>
                   <img src={images[0]} alt={title} />
                   <br />
-                  <button type="button" onClick={handleCloseDetails}>
+                  <button
+                    type="button"
+                    onClick={handleCloseDetails}
+                    data-testid="details-close"
+                  >
                     {TEXTS.BUTTON_CLOSE}
                   </button>
                 </>

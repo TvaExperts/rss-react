@@ -1,38 +1,27 @@
 import React, { ChangeEvent } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import styles from './Pagination.module.css';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants/searchParams';
-import { SEARCH_PARAMETERS } from '../../routs/searchParameters';
+import { DEFAULT_LIMIT } from '../../constants/searchParams';
+import { ActionTypes } from '../../reducers/appReducer';
+import { useAppContext } from '../../hooks/useAppContext';
 
-type PaginationProps = {
-  totalProducts: number;
-};
+function Pagination() {
+  const { state, dispatch } = useAppContext();
+  const { total, limit, page } = state;
 
-function Pagination({ totalProducts }: PaginationProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const limit =
-    Number(searchParams.get(SEARCH_PARAMETERS.limit)) || DEFAULT_LIMIT;
-  const offset = Number(searchParams.get(SEARCH_PARAMETERS.offset)) || 0;
-
-  const currentPageNumber = Math.floor(offset / limit) + 1;
-  const highestPageNumber = Math.ceil(totalProducts / limit);
+  const highestPageNumber = Math.ceil(total / limit);
 
   function handleGoToPage(pageNumber: number) {
-    searchParams.set(
-      SEARCH_PARAMETERS.offset,
-      ((pageNumber - 1) * limit).toString()
-    );
-    if (!searchParams.get(SEARCH_PARAMETERS.limit)) {
-      searchParams.set(SEARCH_PARAMETERS.limit, limit.toString());
-    }
-    setSearchParams(searchParams);
+    dispatch({
+      type: ActionTypes.changePage,
+      payload: pageNumber,
+    });
   }
 
   function handleChangeCountOfItems(event: ChangeEvent<HTMLSelectElement>) {
-    searchParams.set(SEARCH_PARAMETERS.limit, event.target.value);
-    searchParams.set(SEARCH_PARAMETERS.offset, DEFAULT_OFFSET.toString());
-    setSearchParams(searchParams);
+    dispatch({
+      type: ActionTypes.changeLimit,
+      payload: Number(event.target.value) || DEFAULT_LIMIT,
+    });
   }
 
   return (
@@ -42,24 +31,25 @@ function Pagination({ totalProducts }: PaginationProps) {
           type="button"
           className={styles.navigationButton}
           onClick={() => handleGoToPage(1)}
-          disabled={currentPageNumber === 1}
+          disabled={page <= 1}
         >
           &#60;&#60;
         </button>
         <button
           type="button"
           className={styles.navigationButton}
-          onClick={() => handleGoToPage(currentPageNumber - 1)}
-          disabled={currentPageNumber === 1}
+          onClick={() => handleGoToPage(page - 1)}
+          disabled={page <= 1}
         >
           &#60;
         </button>
-        <p>{currentPageNumber}</p>
+        <p>{page}</p>
         <button
           type="button"
           className={styles.navigationButton}
-          onClick={() => handleGoToPage(currentPageNumber + 1)}
-          disabled={currentPageNumber === highestPageNumber}
+          onClick={() => handleGoToPage(page + 1)}
+          disabled={page >= highestPageNumber}
+          data-testid="next-page"
         >
           &#62;
         </button>
@@ -67,7 +57,7 @@ function Pagination({ totalProducts }: PaginationProps) {
           type="button"
           className={styles.navigationButton}
           onClick={() => handleGoToPage(highestPageNumber)}
-          disabled={currentPageNumber === highestPageNumber}
+          disabled={page >= highestPageNumber}
         >
           &#62;&#62;
         </button>
@@ -77,8 +67,8 @@ function Pagination({ totalProducts }: PaginationProps) {
           <option value="20">20</option>
         </select>
       </div>
-      <div className={styles.summary}>{`${totalProducts} product${
-        totalProducts > 1 ? 's' : ''
+      <div className={styles.summary}>{`${total} product${
+        total > 1 ? 's' : ''
       } found. Presented on ${highestPageNumber} page${
         highestPageNumber > 1 ? 's' : ''
       }`}</div>
