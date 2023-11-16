@@ -10,7 +10,7 @@
     "lint": "eslint src --fix --color",
     "format:fix": "prettier src --ignore-unknown --write",
     "test": "vitest run",
-    "coverage": "vitest run --coverage"
+    "coverage": "npx vitest run --coverage.enabled --coverage.provider=v8 --coverage.all"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^6.1.4",
