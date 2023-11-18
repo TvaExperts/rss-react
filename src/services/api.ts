@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { AppSearchParams } from '../reducers/ParamsSlise';
 import IProduct from '../models/IProduct';
 
-const BASE_URL = 'https://dummyjson.com/products';
+export const BASE_URL = 'https://dummyjson.com/products';
 
 export type ProductsApiResponse = {
   total: number;

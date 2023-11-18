@@ -11,15 +11,10 @@ type RenderWithRouterOptions = {
   path?: string;
 };
 
-type RenderWithRouterProps = {
-  component: React.ReactNode | null;
-  options?: RenderWithRouterOptions;
-};
-
-export function renderWithRouter({
-  component,
-  options = {},
-}: RenderWithRouterProps) {
+export function renderWithRouter(
+  component: React.ReactNode,
+  options: RenderWithRouterOptions = {}
+) {
   const { routes = [], path = '/' } = options;
 
   const routeObject: RouteObject = {

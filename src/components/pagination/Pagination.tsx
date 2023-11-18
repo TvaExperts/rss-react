@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './Pagination.module.css';
 import { useAppSelector } from '../../hooks/redux';
 import { ROUTES } from '../../routs/routes';
@@ -13,6 +13,7 @@ function Pagination() {
   );
 
   const navigate = useNavigate();
+  const [sp] = useSearchParams();
 
   const highestPageNumber = Math.ceil(total / limit);
 
@@ -84,6 +85,7 @@ function Pagination() {
       } found. Presented on ${highestPageNumber} page${
         highestPageNumber > 1 ? 's' : ''
       }`}</div>
+      <p>{sp.toString()}</p>
     </>
   );
 }

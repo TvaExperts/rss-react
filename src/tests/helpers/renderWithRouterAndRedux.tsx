@@ -15,15 +15,10 @@ type RenderWithRouterAndReduxOptions = {
   initialState?: object;
 };
 
-type RenderWithRouterAndReduxProps = {
-  component: React.ReactNode | null;
-  options?: RenderWithRouterAndReduxOptions;
-};
-
-export function renderWithRouterAndRedux({
-  component,
-  options = {},
-}: RenderWithRouterAndReduxProps) {
+export function renderWithRouterAndRedux(
+  component: React.ReactNode | null,
+  options: RenderWithRouterAndReduxOptions = {}
+) {
   const { routes = [], path = '/', initialState = {} } = options;
 
   const routeObject: RouteObject = {
