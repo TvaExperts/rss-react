@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Product } from '../../types';
+import IProduct from '../../models/IProduct';
 import styles from './ListItem.module.css';
-import { ROUTS } from '../../routs/routs';
+import { ROUTES } from '../../routs/routes';
 
 export const DESCRIPTION_LENGTH = 50;
 
 type ListItemProps = {
-  product: Product;
+  product: IProduct;
 };
 
 export function ListItem({ product }: ListItemProps) {
@@ -17,7 +17,7 @@ export function ListItem({ product }: ListItemProps) {
 
   return (
     <li className={styles.listItem}>
-      <Link to={`${ROUTS.product}/${product.id}`}>
+      <Link to={`${ROUTES.product}/${product.id}`}>
         <span className={styles.title} data-testid="item-title">
           {product.title}
         </span>{' '}

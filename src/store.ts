@@ -2,12 +2,12 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { productReducer } from './reducers/ProductSlice';
 import { productsReducer } from './reducers/ProductsSlice';
 import { productApi } from './services/api';
-import { searchParamsReducer } from './reducers/ParamsSlise';
+import { appSearchParamsReducer } from './reducers/ParamsSlise';
 
 const rootReducer = combineReducers({
   productReducer,
   productsReducer,
-  searchParamsReducer,
+  searchParamsReducer: appSearchParamsReducer,
   [productApi.reducerPath]: productApi.reducer,
 });
 

@@ -1,6 +1,6 @@
-const ROUTS = {
+const ROUTES = {
   home: '/',
   product: '/product',
 } as const;
 
-export { ROUTS };
+export { ROUTES };

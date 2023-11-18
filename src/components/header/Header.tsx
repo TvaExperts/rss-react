@@ -1,10 +1,10 @@
-import React, { ChangeEvent, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
 import { useAppSelector } from '../../hooks/redux';
-import { SEARCH_PARAMETERS } from '../../routs/searchParameters';
-import { ROUTS } from '../../routs/routs';
+import { ROUTES } from '../../routs/routes';
 import { saveNewQueryInLS } from '../../utils/localStorage';
+import { createSearchParams } from '../../utils/createSearchParams';
 
 enum TEXTS {
   INPUT_PLACEHOLDER = 'Product search',
@@ -14,19 +14,27 @@ enum TEXTS {
 
 export function Header() {
   const { isLoading } = useAppSelector((state) => state.productsReducer);
-  const { text } = useAppSelector((state) => state.searchParamsReducer);
+  const { text, limit } = useAppSelector((state) => state.searchParamsReducer);
 
   const [inputText, setInputText] = useState<string>(text);
 
-  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    setInputText(text);
+  }, [text]);
+
   const navigate = useNavigate();
 
   function handleClickSearch() {
     const trimmedText = inputText.trim();
-    searchParams.set(SEARCH_PARAMETERS.query, trimmedText);
-    searchParams.set(SEARCH_PARAMETERS.page, '1');
+
     saveNewQueryInLS(trimmedText);
-    navigate(`${ROUTS.home}?${searchParams.toString()}`);
+
+    const newSearchParams = createSearchParams({
+      text: trimmedText,
+      page: 1,
+      limit,
+    });
+    navigate(`${ROUTES.home}?${newSearchParams.toString()}`);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {

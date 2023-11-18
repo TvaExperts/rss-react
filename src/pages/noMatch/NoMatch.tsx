@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ROUTS } from '../../routs/routs';
+import { ROUTES } from '../../routs/routes';
 
 enum TEXTS {
   MAIN_TEXT = 'Page not found.',
@@ -10,7 +10,7 @@ function NoMatch() {
   const navigate = useNavigate();
 
   function handleGoHomePage() {
-    navigate(ROUTS.home);
+    navigate(ROUTES.home);
   }
 
   return (

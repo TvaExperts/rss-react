@@ -1,14 +1,14 @@
 /* eslint-disable no-param-reassign */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Product } from '../types';
-import { ProductsApiResponse } from '../services/oldApi';
+import IProduct from '../models/IProduct';
+import { ProductsApiResponse } from '../services/api';
 
 interface ProductsState {
   isLoading: boolean;
   error: string;
   total: number;
-  products: Product[];
+  products: IProduct[];
 }
 
 const initialState: ProductsState = {
@@ -27,16 +27,19 @@ const ProductsSlice = createSlice({
       state.error = '';
       state.products = action.payload.products;
       state.total = action.payload.total;
+      return state;
     },
     setError(state, action: PayloadAction<string>) {
       state.isLoading = false;
       state.error = action.payload;
+      return state;
     },
     setLoading(state) {
       state.isLoading = true;
       state.error = '';
       state.products = [];
       state.total = 0;
+      return state;
     },
   },
 });

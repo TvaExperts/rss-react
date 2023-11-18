@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { vi } from 'vitest';
 import { routes } from '../../routs/router';
-import { ROUTS } from '../../routs/routs';
+import { ROUTES } from '../../routs/routes';
 import { mockProduct } from '../../tests/mocks/mockProduct';
 import { renderWithRouter } from '../../tests/helpers/renderWithRouter';
 import { mockArrOf10Products } from '../../tests/mocks/mockArrOf10Products';
@@ -30,7 +30,7 @@ describe('Tests for the Detailed Card component', () => {
   });
 
   it('Should renders with loader status when open details page', async () => {
-    renderWithRouter(null, routes, `${ROUTS.product}/:${mockProduct.id}`);
+    renderWithRouter(null, routes, `${ROUTES.product}/:${mockProduct.id}`);
 
     const loadingElement = await screen.findByTestId('details-loading');
     expect(loadingElement).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('Tests for the Detailed Card component', () => {
     const { findByTestId } = renderWithRouter(
       null,
       routes,
-      `${ROUTS.product}/:${mockProduct.id}`
+      `${ROUTES.product}/:${mockProduct.id}`
     );
 
     const title = await findByTestId('product-title');
@@ -51,7 +51,7 @@ describe('Tests for the Detailed Card component', () => {
   });
 
   it('Should close page when click button close ', async () => {
-    renderWithRouter(null, routes, `${ROUTS.product}/${mockProduct.id}`);
+    renderWithRouter(null, routes, `${ROUTES.product}/${mockProduct.id}`);
 
     const closeButton = await screen.findByTestId('details-close');
 
