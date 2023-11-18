@@ -6,12 +6,28 @@ import {
   RouteObject,
 } from 'react-router-dom';
 
-export function renderWithRouter(
-  routeObject: RouteObject | null,
-  routes: RouteObject[] = [],
-  path: string = '/'
-) {
-  const allRoutes = routeObject ? [routeObject, ...routes] : [...routes];
+type RenderWithRouterOptions = {
+  routes?: RouteObject[];
+  path?: string;
+};
+
+type RenderWithRouterProps = {
+  component: React.ReactNode | null;
+  options?: RenderWithRouterOptions;
+};
+
+export function renderWithRouter({
+  component,
+  options = {},
+}: RenderWithRouterProps) {
+  const { routes = [], path = '/' } = options;
+
+  const routeObject: RouteObject = {
+    element: component,
+    path,
+  };
+
+  const allRoutes = component ? [routeObject, ...routes] : [...routes];
 
   const router = createMemoryRouter(allRoutes, {
     initialEntries: [path],
