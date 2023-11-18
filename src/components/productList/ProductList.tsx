@@ -6,13 +6,18 @@ import { useAppSelector } from '../../hooks/redux';
 
 enum TEXTS {
   LOADING = 'Loading data...',
+  LOADING_ERROR = 'Error loading product data!',
   NOT_FOUND = 'Nothing was found, make another request',
 }
 
 function ProductList() {
-  const { products, total, isLoading } = useAppSelector(
+  const { products, total, isLoading, isError } = useAppSelector(
     (state) => state.productsReducer
   );
+
+  if (isError) {
+    return <div className={styles.productListBlock}>{TEXTS.LOADING_ERROR}</div>;
+  }
 
   if (isLoading) {
     return <div className={styles.productListBlock}>{TEXTS.LOADING}</div>;

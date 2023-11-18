@@ -11,7 +11,9 @@ export default function Details() {
   const navigate = useNavigate();
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  const appSearchParams = useAppSelector((state) => state.searchParamsReducer);
+  const appSearchParams = useAppSelector(
+    (state) => state.appSearchParamsReducer
+  );
 
   function handleCloseDetails() {
     const newSearchParams = createSearchParams(appSearchParams);
@@ -31,7 +33,9 @@ export default function Details() {
       ref={overlayRef}
       role="presentation"
     >
-      <ProductDetails onClose={() => handleCloseDetails()} />
+      <article className={styles.productDetails} data-testid="product-details">
+        <ProductDetails onClose={() => handleCloseDetails()} />
+      </article>
     </div>
   );
 }

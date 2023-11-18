@@ -9,7 +9,9 @@ import { useSetupSearchParams } from '../../hooks/useSetupSearchParams';
 
 function Home() {
   const dispatch = useAppDispatch();
-  const appSearchParams = useAppSelector((state) => state.searchParamsReducer);
+  const appSearchParams = useAppSelector(
+    (state) => state.appSearchParamsReducer
+  );
 
   useSetupSearchParams();
   useUpdateAppSearchParams();
@@ -19,7 +21,7 @@ function Home() {
 
   useEffect(() => {
     if (error) {
-      dispatch(productsActions.setError(error.toString()));
+      dispatch(productsActions.setError());
     } else if (isFetching) {
       dispatch(productsActions.setLoading());
     } else if (data) {

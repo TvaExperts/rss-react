@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
-import App from './App';
+import App from './components/app/App';
 import ErrorBoundary from './ErrorBoundary';
 import { Fallback } from './components/fallback/Fallback';
 import { setupStore } from './store';

@@ -1,54 +1,43 @@
-// import { RouteObject } from 'react-router-dom';
-// import { renderWithRouterAndRedux } from '../../tests/helpers/renderWithRouterAndRedux';
-// import { routes } from '../../routs/router';
-// import { mockArrOf10Products } from '../../tests/mocks/mockArrOf10Products';
-// import ProductList from './ProductList';
-//
-// const routeObject: RouteObject = {
-//   element: <ProductList />,
-//   path: '/',
-// };
-//
-// describe('Product List tests', () => {
-//   it('Component renders the specified number of cards', () => {
-//     const state: AppState = {
-//       products: mockArrOf10Products,
-//       total: mockArrOf10Products.length,
-//       page: 1,
-//       limit: 10,
-//       query: '',
-//     };
-//
-//     const { getAllByRole } = renderWithRouterAndRedux(
-//       routeObject,
-//       routes,
-//       '/',
-//       state
-//     );
-//     const listItems = getAllByRole('listitem');
-//     expect(listItems.length).toBe(mockArrOf10Products.length);
-//   });
-//
-//   it('Component renders warning message if no cards are present.', () => {
-//     const state: AppState = {
-//       products: [],
-//       total: 0,
-//       page: 1,
-//       limit: 10,
-//       query: '',
-//     };
-//
-//     const { getByText } = renderWithRouterAndRedux(
-//       routeObject,
-//       routes,
-//       '/',
-//       state
-//     );
-//
-//     const warningMessageElement = getByText(
-//       /Nothing was found, make another request/i
-//     );
-//
-//     expect(warningMessageElement).toBeInTheDocument();
-//   });
-// });
+import { renderWithRouterAndRedux } from '../../tests/helpers/renderWithRouterAndRedux';
+import ProductList from './ProductList';
+import { mockArrOf30Products } from '../../tests/mocks/mockArrOf30Products';
+import { renderWithRedux } from '../../tests/helpers/renderWithRedux';
+
+describe('Product List tests', () => {
+  it('Component renders the specified number of cards', async () => {
+    const initialState = {
+      productsReducer: {
+        total: mockArrOf30Products.length,
+        products: mockArrOf30Products,
+        isLoading: false,
+        error: '',
+      },
+      appSearchParamsReducer: {
+        limit: 10,
+        page: 1,
+        query: '',
+      },
+    };
+    const { findAllByRole } = renderWithRouterAndRedux(<ProductList />, {
+      initialState,
+    });
+    const listItems = await findAllByRole('listitem');
+    expect(listItems.length).toBe(mockArrOf30Products.length);
+  });
+
+  it('Component renders warning message if no cards are present.', () => {
+    const initialState = {
+      productsReducer: {
+        total: 0,
+        products: [],
+        isLoading: false,
+        error: '',
+      },
+    };
+    const { getByText } = renderWithRedux(<ProductList />, initialState);
+    const warningMessageElement = getByText(
+      /Nothing was found, make another request/i
+    );
+    expect(warningMessageElement).toBeInTheDocument();
+  });
+});

@@ -10,7 +10,7 @@ export type ProductsApiResponse = {
 };
 
 export const productApi = createApi({
-  reducerPath: 'productAPI',
+  reducerPath: 'productApi',
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   endpoints: (builder) => ({
     getSearchProductsOnPage: builder.query<

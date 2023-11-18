@@ -6,14 +6,14 @@ import { ProductsApiResponse } from '../services/api';
 
 interface ProductsState {
   isLoading: boolean;
-  error: string;
+  isError: boolean;
   total: number;
   products: IProduct[];
 }
 
 const initialState: ProductsState = {
   isLoading: false,
-  error: '',
+  isError: false,
   products: [],
   total: 0,
 };
@@ -24,19 +24,19 @@ const ProductsSlice = createSlice({
   reducers: {
     setProducts(state, action: PayloadAction<ProductsApiResponse>) {
       state.isLoading = false;
-      state.error = '';
+      state.isError = false;
       state.products = action.payload.products;
       state.total = action.payload.total;
       return state;
     },
-    setError(state, action: PayloadAction<string>) {
+    setError(state) {
       state.isLoading = false;
-      state.error = action.payload;
+      state.isError = true;
       return state;
     },
     setLoading(state) {
       state.isLoading = true;
-      state.error = '';
+      state.isError = false;
       state.products = [];
       state.total = 0;
       return state;

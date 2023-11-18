@@ -29,14 +29,18 @@ describe('Tests for the Card component', () => {
   });
 
   it('Should opens a detailed card component when click title', async () => {
-    const { findAllByRole } = renderWithRouterAndRedux(null, {
+    const { findAllByRole, queryByTestId } = renderWithRouterAndRedux(null, {
       routes,
     });
 
     const titleLinkElement = (await findAllByRole('link'))[0];
+
+    let detailsPage = queryByTestId('product-details');
+    expect(detailsPage).not.toBeInTheDocument();
+
     await userEvent.click(titleLinkElement);
 
-    const detailsPage = await screen.findByTestId('product-details');
+    detailsPage = await screen.findByTestId('product-details');
     expect(detailsPage).toBeInTheDocument();
   });
 

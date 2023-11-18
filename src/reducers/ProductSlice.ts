@@ -5,13 +5,13 @@ import IProduct from '../models/IProduct';
 
 interface ProductState {
   isLoading: boolean;
-  error: string;
+  isError: boolean;
   product: IProduct | null;
 }
 
 const initialState: ProductState = {
   isLoading: false,
-  error: '',
+  isError: false,
   product: null,
 };
 
@@ -21,18 +21,18 @@ const ProductSlice = createSlice({
   reducers: {
     setProduct(state, action: PayloadAction<IProduct>) {
       state.isLoading = false;
-      state.error = '';
+      state.isError = false;
       state.product = action.payload;
     },
     setLoading(state) {
       state.isLoading = true;
-      state.error = '';
+      state.isError = false;
       state.product = null;
       return state;
     },
-    setError(state, action: PayloadAction<string>) {
+    setError(state) {
       state.isLoading = false;
-      state.error = action.payload;
+      state.isError = true;
       state.product = null;
       return state;
     },

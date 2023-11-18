@@ -7,7 +7,7 @@ import { appSearchParamsReducer } from './reducers/ParamsSlise';
 const rootReducer = combineReducers({
   productReducer,
   productsReducer,
-  searchParamsReducer: appSearchParamsReducer,
+  appSearchParamsReducer,
   [productApi.reducerPath]: productApi.reducer,
 });
 

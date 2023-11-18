@@ -14,7 +14,9 @@ enum TEXTS {
 
 export function Header() {
   const { isLoading } = useAppSelector((state) => state.productsReducer);
-  const { text, limit } = useAppSelector((state) => state.searchParamsReducer);
+  const { text, limit } = useAppSelector(
+    (state) => state.appSearchParamsReducer
+  );
 
   const [inputText, setInputText] = useState<string>(text);
 

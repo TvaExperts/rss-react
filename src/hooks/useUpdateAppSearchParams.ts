@@ -15,7 +15,7 @@ export function useUpdateAppSearchParams() {
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
   const { text, limit, page } = useAppSelector(
-    (state) => state.searchParamsReducer
+    (state) => state.appSearchParamsReducer
   );
 
   useEffect(() => {
