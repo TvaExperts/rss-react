@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect } from 'react';
 
 import { useGetProductByIdQuery } from '../../services/api';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useAppDispatch } from '../../hooks/redux';
 import { productActions } from '../../reducers/ProductSlice';
 
 enum TEXTS {
@@ -20,24 +20,20 @@ export function ProductDetails({ onClose }: ProductDetailsProps) {
   const dispatch = useAppDispatch();
 
   const {
-    data,
-    isFetching,
-    error: fetchError,
+    data: product,
+    isFetching: isLoading,
+    error: isError,
   } = useGetProductByIdQuery(productId || '1');
 
   useEffect(() => {
-    if (fetchError) {
+    if (isError) {
       dispatch(productActions.setError());
-    } else if (isFetching) {
+    } else if (isLoading) {
       dispatch(productActions.setLoading());
-    } else if (data) {
-      dispatch(productActions.setProduct(data));
+    } else if (product) {
+      dispatch(productActions.setProduct(product));
     }
-  }, [data, dispatch, fetchError, isFetching]);
-
-  const { product, isLoading, isError } = useAppSelector(
-    (state) => state.productReducer
-  );
+  }, [product, dispatch, isError, isLoading]);
 
   if (isLoading) {
     return <p data-testid="details-loading">{TEXTS.LOADING}</p>;
