@@ -1,14 +1,10 @@
 import './global.css';
+import React from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routs/router';
-import { AppProvider } from './context/AppProvider';
 
 function App() {
-  return (
-    <AppProvider>
-      <RouterProvider router={router} />
-    </AppProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

@@ -1,9 +1,10 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './Header.module.css';
+import { useAppSelector } from '../../hooks/redux';
+import { SEARCH_PARAMETERS } from '../../routs/searchParameters';
+import { ROUTS } from '../../routs/routs';
 import { saveNewQueryInLS } from '../../utils/localStorage';
-import { getProductsFromApi } from '../../services/api';
-import { ActionTypes } from '../../reducers/appReducer';
-import { useAppContext } from '../../hooks/useAppContext';
 
 enum TEXTS {
   INPUT_PLACEHOLDER = 'Product search',
@@ -11,29 +12,21 @@ enum TEXTS {
   BUTTON_SEARCH_LOADING = 'Loading...',
 }
 
-type HeaderProps = {
-  setIsLoading: (isLoading: boolean) => void;
-  isLoading: boolean;
-};
+export function Header() {
+  const { isLoading } = useAppSelector((state) => state.productsReducer);
+  const { text } = useAppSelector((state) => state.searchParamsReducer);
 
-export function Header({ setIsLoading, isLoading }: HeaderProps) {
-  const { state, dispatch } = useAppContext();
-  const { query, limit, page } = state;
-  const [inputText, setInputText] = useState<string>(query);
+  const [inputText, setInputText] = useState<string>(text);
 
-  useEffect(() => {
-    if (!limit) return;
-    setIsLoading(true);
-    setInputText(query);
-    saveNewQueryInLS(query);
-    getProductsFromApi(query, limit, page).then((productApiResponse) => {
-      dispatch({ type: ActionTypes.setProducts, payload: productApiResponse });
-      setIsLoading(false);
-    });
-  }, [query, limit, page, dispatch, setIsLoading]);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   function handleClickSearch() {
-    dispatch({ type: ActionTypes.setQuery, payload: inputText.trim() });
+    const trimmedText = inputText.trim();
+    searchParams.set(SEARCH_PARAMETERS.query, trimmedText);
+    searchParams.set(SEARCH_PARAMETERS.page, '1');
+    saveNewQueryInLS(trimmedText);
+    navigate(`${ROUTS.home}?${searchParams.toString()}`);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {

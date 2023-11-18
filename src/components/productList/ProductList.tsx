@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import React from 'react';
 import { ListItem } from '../listItem/ListItem';
 import Pagination from '../pagination/Pagination';
 import styles from './ProductList.module.css';
-import { AppContext } from '../../context/AppProvider';
+import { useAppSelector } from '../../hooks/redux';
 
 enum TEXTS {
   LOADING = 'Loading data...',
@@ -11,22 +10,26 @@ enum TEXTS {
 }
 
 function ProductList() {
-  const { products, total } = useContext(AppContext).state;
-  const isLoading = useOutletContext<boolean>();
+  const { products, total, isLoading } = useAppSelector(
+    (state) => state.productsReducer
+  );
+
+  if (isLoading) {
+    return <div className={styles.productListBlock}>{TEXTS.LOADING}</div>;
+  }
+
+  if (total === 0) {
+    return <div className={styles.productListBlock}>{TEXTS.NOT_FOUND}</div>;
+  }
+
   return (
     <div className={styles.productListBlock}>
-      {isLoading && TEXTS.LOADING}
-      {!isLoading && total === 0 && TEXTS.NOT_FOUND}
-      {!isLoading && total > 0 && (
-        <>
-          <Pagination />
-          <ul>
-            {products.map((product) => {
-              return <ListItem product={product} key={product.id} />;
-            })}
-          </ul>
-        </>
-      )}
+      <Pagination />
+      <ul>
+        {products.map((product) => {
+          return <ListItem product={product} key={product.id} />;
+        })}
+      </ul>
     </div>
   );
 }

@@ -1,10 +1,7 @@
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import RootLayout from '../layouts/RootLayout';
 import { Fallback } from '../components/fallback/Fallback';
-import {
-  loaderProductDetails,
-  ProductDetails,
-} from '../components/productDetails/ProductDetails';
+import { ProductDetails } from '../components/productDetails/ProductDetails';
 import { ROUTS } from './routs';
 import Home from '../pages/home/Home';
 import NoMatch from '../pages/noMatch/NoMatch';
@@ -21,7 +18,6 @@ const routes: RouteObject[] = [
         children: [
           {
             path: `${ROUTS.product}/:productId`,
-            loader: loaderProductDetails,
             element: <ProductDetails />,
           },
         ],

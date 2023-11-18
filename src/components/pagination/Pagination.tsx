@@ -1,27 +1,34 @@
 import React, { ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Pagination.module.css';
-import { DEFAULT_LIMIT } from '../../constants/searchParams';
-import { ActionTypes } from '../../reducers/appReducer';
-import { useAppContext } from '../../hooks/useAppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { SEARCH_PARAMETERS } from '../../routs/searchParameters';
+import { ROUTS } from '../../routs/routs';
 
 function Pagination() {
-  const { state, dispatch } = useAppContext();
-  const { total, limit, page } = state;
+  const { total } = useAppSelector((state) => state.productsReducer);
+  const { limit, page, text } = useAppSelector(
+    (state) => state.searchParamsReducer
+  );
+
+  const navigate = useNavigate();
 
   const highestPageNumber = Math.ceil(total / limit);
 
   function handleGoToPage(pageNumber: number) {
-    dispatch({
-      type: ActionTypes.changePage,
-      payload: pageNumber,
-    });
+    const searchParams = new URLSearchParams();
+    searchParams.set(SEARCH_PARAMETERS.query, text);
+    searchParams.set(SEARCH_PARAMETERS.page, pageNumber.toString(10));
+    searchParams.set(SEARCH_PARAMETERS.limit, limit.toString(10));
+    navigate(`${ROUTS.home}?${searchParams.toString()}`);
   }
 
   function handleChangeCountOfItems(event: ChangeEvent<HTMLSelectElement>) {
-    dispatch({
-      type: ActionTypes.changeLimit,
-      payload: Number(event.target.value) || DEFAULT_LIMIT,
-    });
+    const searchParams = new URLSearchParams();
+    searchParams.set(SEARCH_PARAMETERS.query, text);
+    searchParams.set(SEARCH_PARAMETERS.page, '1');
+    searchParams.set(SEARCH_PARAMETERS.limit, event.target.value);
+    navigate(`${ROUTS.home}?${searchParams.toString()}`);
   }
 
   return (
@@ -69,7 +76,7 @@ function Pagination() {
       </div>
       <div className={styles.summary}>{`${total} product${
         total > 1 ? 's' : ''
-      } found. Presented on ${highestPageNumber} page${
+      } found. ${text} Presented on ${highestPageNumber} page${
         highestPageNumber > 1 ? 's' : ''
       }`}</div>
     </>

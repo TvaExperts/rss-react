@@ -1,42 +1,41 @@
-import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
-import styles from './Home.module.css';
+import React, { useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 import ProductList from '../../components/productList/ProductList';
-import { useAppContext } from '../../hooks/useAppContext';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useGetAllProductsOnPageQuery } from '../../services/api';
+import { productsActions } from '../../reducers/ProductsSlice';
 import { useAppSearchParams } from '../../hooks/useAppSearchParams';
-import { ActionTypes } from '../../reducers/appReducer';
-import { ROUTS } from '../../routs/routs';
 
 function Home() {
-  const [hasInitSearchParams, setHasInitSearchParams] =
-    useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
-  const { dispatch } = useAppContext();
+  useAppSearchParams();
 
-  const { pathname } = useLocation();
+  const { text, limit, page } = useAppSelector(
+    (state) => state.searchParamsReducer
+  );
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const filledParams = useAppSearchParams();
+  const { data, error, isLoading } = useGetAllProductsOnPageQuery({
+    text,
+    limit,
+    page,
+  });
 
   useEffect(() => {
-    if (!hasInitSearchParams) {
-      dispatch({
-        type: ActionTypes.setSearchParamsFromUrl,
-        payload: searchParams,
-      });
-      setHasInitSearchParams(true);
+    if (error) {
+      dispatch(productsActions.setError(error.toString()));
+    } else if (isLoading) {
+      dispatch(productsActions.setLoading());
+    } else if (data) {
+      dispatch(productsActions.setProducts(data));
     }
-  }, [dispatch, hasInitSearchParams, searchParams]);
-
-  useEffect(() => {
-    if (pathname === ROUTS.home) setSearchParams(filledParams);
-  }, [filledParams, pathname, setSearchParams]);
+  }, [data, dispatch, error, isLoading]);
 
   return (
-    <main className={styles.main}>
+    <>
       <ProductList />
       <Outlet />
-    </main>
+    </>
   );
 }
 
