@@ -35,10 +35,9 @@ describe('Tests for the Detailed Card component', () => {
       path: `${ROUTES.product}/:${mockProduct.id}`,
     });
 
-    expect(await findByTestId('product-details')).toBeInTheDocument();
+    const productTitle = await findByTestId('product-title');
+    expect(productTitle).toBeInTheDocument();
     const closeButton = await findByTestId('details-close');
-
-    expect(closeButton).toBeInTheDocument();
 
     await userEvent.click(closeButton);
 

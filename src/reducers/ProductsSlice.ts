@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import IProduct from '../models/IProduct';
-import { ProductsApiResponse } from '../services/api';
+import { productApi } from '../services/api';
 
 interface ProductsState {
   isLoading: boolean;
@@ -21,26 +21,36 @@ const initialState: ProductsState = {
 const ProductsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {
-    setProducts(state, action: PayloadAction<ProductsApiResponse>) {
-      state.isLoading = false;
-      state.isError = false;
-      state.products = action.payload.products;
-      state.total = action.payload.total;
-      return state;
-    },
-    setError(state) {
-      state.isLoading = false;
-      state.isError = true;
-      return state;
-    },
-    setLoading(state) {
-      state.isLoading = true;
-      state.isError = false;
-      state.products = [];
-      state.total = 0;
-      return state;
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(
+        productApi.endpoints?.getSearchProductsOnPage.matchFulfilled,
+        (state, { payload: { products, total } }) => {
+          state.products = products;
+          state.total = total;
+          state.isLoading = false;
+          state.isError = false;
+        }
+      )
+      .addMatcher(
+        productApi.endpoints?.getSearchProductsOnPage.matchRejected,
+        (state) => {
+          state.products = [];
+          state.total = 0;
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
+      .addMatcher(
+        productApi.endpoints?.getSearchProductsOnPage.matchPending,
+        (state) => {
+          state.products = [];
+          state.total = 0;
+          state.isLoading = true;
+          state.isError = false;
+        }
+      );
   },
 });
 

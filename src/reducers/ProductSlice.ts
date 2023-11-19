@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import IProduct from '../models/IProduct';
+import { productApi } from '../services/api';
 
 interface ProductState {
   isLoading: boolean;
@@ -18,24 +19,33 @@ const initialState: ProductState = {
 const ProductSlice = createSlice({
   name: 'product',
   initialState,
-  reducers: {
-    setProduct(state, action: PayloadAction<IProduct>) {
-      state.isLoading = false;
-      state.isError = false;
-      state.product = action.payload;
-    },
-    setLoading(state) {
-      state.isLoading = true;
-      state.isError = false;
-      state.product = null;
-      return state;
-    },
-    setError(state) {
-      state.isLoading = false;
-      state.isError = true;
-      state.product = null;
-      return state;
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(
+        productApi.endpoints?.getProductById.matchFulfilled,
+        (state, { payload }) => {
+          state.product = payload;
+          state.isLoading = false;
+          state.isError = false;
+        }
+      )
+      .addMatcher(
+        productApi.endpoints?.getProductById.matchRejected,
+        (state) => {
+          state.product = null;
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
+      .addMatcher(
+        productApi.endpoints?.getProductById.matchPending,
+        (state) => {
+          state.product = null;
+          state.isLoading = true;
+          state.isError = false;
+        }
+      );
   },
 });
 

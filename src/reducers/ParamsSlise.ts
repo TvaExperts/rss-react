@@ -30,11 +30,6 @@ const AppSearchParamsSlice = createSlice({
     setParams(state, action: PayloadAction<AppSearchParams>) {
       return action.payload;
     },
-    setSearchQuery(state, action: PayloadAction<string>) {
-      console.log(action.payload);
-      state.text = action.payload;
-      return state;
-    },
   },
 });
 

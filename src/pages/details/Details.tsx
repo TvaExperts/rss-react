@@ -1,15 +1,22 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import React, { useRef } from 'react';
 import styles from './Details.module.css';
-
 import { ROUTES } from '../../routs/routes';
 import { useAppSelector } from '../../hooks/redux';
 import { ProductDetails } from '../../components/productDetails/ProductDetails';
 import { createSearchParams } from '../../utils/createSearchParams';
+import { useGetProductByIdQuery } from '../../services/api';
+
+enum TEXTS {
+  BUTTON_CLOSE = 'Close',
+}
 
 export default function Details() {
   const navigate = useNavigate();
   const overlayRef = useRef<HTMLDivElement>(null);
+  const { productId } = useParams();
+
+  useGetProductByIdQuery(productId || '1');
 
   const appSearchParams = useAppSelector(
     (state) => state.appSearchParamsReducer
@@ -34,7 +41,14 @@ export default function Details() {
       role="presentation"
     >
       <article className={styles.productDetails} data-testid="product-details">
-        <ProductDetails onClose={() => handleCloseDetails()} />
+        <ProductDetails />
+        <button
+          type="button"
+          onClick={handleCloseDetails}
+          data-testid="details-close"
+        >
+          {TEXTS.BUTTON_CLOSE}
+        </button>
       </article>
     </div>
   );
