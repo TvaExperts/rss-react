@@ -17,10 +17,13 @@ export const productApi = createApi({
       ProductsApiResponse,
       AppSearchParams
     >({
-      query: (searchParams) => ({
-        url: `/search?q=${searchParams.text}&limit=${searchParams.limit}&skip=${
-          (searchParams.page - 1) * searchParams.limit
-        }`,
+      query: (appSearchParams) => ({
+        url: `/search`,
+        params: {
+          q: appSearchParams.text,
+          limit: appSearchParams.limit,
+          skip: (appSearchParams.page - 1) * appSearchParams.limit,
+        },
       }),
     }),
 

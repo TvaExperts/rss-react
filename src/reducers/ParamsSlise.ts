@@ -3,12 +3,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getQueryFromLS } from '../utils/localStorage';
 
-export const SEARCH_PARAMETERS = {
-  page: 'page',
-  limit: 'limit',
-  query: 'query',
-} as const;
-
 export const DEFAULT_LIMIT = 10;
 
 export interface AppSearchParams {

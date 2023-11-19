@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import IProduct from '../models/IProduct';
 import { productApi } from '../services/api';
 
@@ -19,13 +19,16 @@ const initialState: ProductState = {
 const ProductSlice = createSlice({
   name: 'product',
   initialState,
-  reducers: {},
+  reducers: {
+    setProduct(state, { payload }: PayloadAction<IProduct | null>) {
+      state.product = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addMatcher(
         productApi.endpoints?.getProductById.matchFulfilled,
-        (state, { payload }) => {
-          state.product = payload;
+        (state) => {
           state.isLoading = false;
           state.isError = false;
         }

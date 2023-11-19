@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import IProduct from '../models/IProduct';
-import { productApi } from '../services/api';
+import { productApi, ProductsApiResponse } from '../services/api';
 
 interface ProductsState {
   isLoading: boolean;
@@ -21,14 +21,26 @@ const initialState: ProductsState = {
 const ProductsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    setProductsData(
+      state,
+      { payload }: PayloadAction<ProductsApiResponse | null>
+    ) {
+      if (payload === null) {
+        state.total = 0;
+        state.products = [];
+        return state;
+      }
+      state.total = payload.total;
+      state.products = payload.products;
+      return state;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addMatcher(
         productApi.endpoints?.getSearchProductsOnPage.matchFulfilled,
-        (state, { payload: { products, total } }) => {
-          state.products = products;
-          state.total = total;
+        (state) => {
           state.isLoading = false;
           state.isError = false;
         }
