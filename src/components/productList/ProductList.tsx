@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ListItem } from '../listItem/ListItem';
 import Pagination from '../pagination/Pagination';
 import styles from './ProductList.module.css';
-import { useAppSelector } from '../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useSetupSearchParams } from '../../hooks/useSetupSearchParams';
+import { useUpdateAppSearchParams } from '../../hooks/useUpdateAppSearchParams';
+import { useGetSearchProductsOnPageQuery } from '../../services/api';
+import { productsActions } from '../../reducers/ProductsSlice';
 
 enum TEXTS {
   LOADING = 'Loading data...',
@@ -11,17 +15,33 @@ enum TEXTS {
 }
 
 function ProductList() {
-  const { products, total, isLoading, isError } = useAppSelector(
-    (state) => state.productsReducer
+  const dispatch = useAppDispatch();
+  const appSearchParams = useAppSelector(
+    (state) => state.appSearchParamsReducer
   );
 
-  if (isError) {
+  useSetupSearchParams();
+  useUpdateAppSearchParams();
+
+  const {
+    data: productsData,
+    isError,
+    isFetching,
+  } = useGetSearchProductsOnPageQuery(appSearchParams);
+
+  useEffect(() => {
+    dispatch(productsActions.setProductsData(productsData || null));
+  }, [dispatch, productsData]);
+
+  if (isFetching) {
+    return <div className={styles.productListBlock}>{TEXTS.LOADING}</div>;
+  }
+
+  if (isError || !productsData) {
     return <div className={styles.productListBlock}>{TEXTS.LOADING_ERROR}</div>;
   }
 
-  if (isLoading) {
-    return <div className={styles.productListBlock}>{TEXTS.LOADING}</div>;
-  }
+  const { total, products } = productsData;
 
   if (total === 0) {
     return <div className={styles.productListBlock}>{TEXTS.NOT_FOUND}</div>;
