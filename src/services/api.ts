@@ -1,60 +1,37 @@
-import axios from 'axios';
-import { Product } from '../types';
-import { DEFAULT_LIMIT } from '../constants/searchParams';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { AppSearchParams } from '../reducers/ParamsSlise';
+import IProduct from '../models/IProduct';
 
-const API_URL = 'https://dummyjson.com/products';
+export const BASE_URL = 'https://dummyjson.com/products';
 
-type ProductsApiResponse = {
+export type ProductsApiResponse = {
   total: number;
-  products: Product[];
+  products: IProduct[];
 };
 
-type ProductApiResponse = {
-  data: Product;
-};
+export const productApi = createApi({
+  reducerPath: 'productApi',
+  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
+  endpoints: (builder) => ({
+    getSearchProductsOnPage: builder.query<
+      ProductsApiResponse,
+      AppSearchParams
+    >({
+      query: (appSearchParams) => ({
+        url: `/search`,
+        params: {
+          q: appSearchParams.text,
+          limit: appSearchParams.limit,
+          skip: (appSearchParams.page - 1) * appSearchParams.limit,
+        },
+      }),
+    }),
 
-function createSearchParamsPartURL(
-  limit?: number,
-  page?: number,
-  query?: string
-) {
-  const searchParams = new URLSearchParams();
+    getProductById: builder.query<IProduct, string>({
+      query: (id) => ({ url: `/${id}` }),
+    }),
+  }),
+});
 
-  if (limit !== undefined) searchParams.set('limit', limit.toString());
-  if (page !== undefined)
-    searchParams.set(
-      'skip',
-      ((page - 1) * (limit || DEFAULT_LIMIT)).toString()
-    );
-  if (query?.length) searchParams.set('q', query);
-
-  return searchParams.size ? `${searchParams.toString()}` : '';
-}
-
-async function getProductsFromApi(
-  query?: string,
-  limit?: number,
-  page?: number
-): Promise<ProductsApiResponse> {
-  try {
-    const searchParamsPartURL = createSearchParamsPartURL(limit, page, query);
-
-    const requestUrl = query
-      ? `${API_URL}/search?${searchParamsPartURL}`
-      : `${API_URL}?${searchParamsPartURL}`;
-
-    const response = await axios.get(requestUrl);
-
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
-  }
-}
-
-function getProductPromise(id: string): Promise<ProductApiResponse> {
-  return axios.get(`${API_URL}/${id}`);
-}
-
-export { getProductsFromApi, getProductPromise };
-export type { ProductApiResponse, ProductsApiResponse };
+export const { useGetProductByIdQuery, useGetSearchProductsOnPageQuery } =
+  productApi;

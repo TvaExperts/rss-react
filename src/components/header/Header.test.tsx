@@ -1,33 +1,14 @@
-import { vi } from 'vitest';
-import { RouteObject } from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
+import { KEY_IN_LS } from '../../utils/localStorage';
+import { renderWithRouterAndRedux } from '../../tests/helpers/renderWithRouterAndRedux';
 import { Header } from './Header';
 import { routes } from '../../routs/router';
-import { renderWithRouterAndContext } from '../../tests/helpers/renderWithRouterAndContext';
-import { mockArrOf10Products } from '../../tests/mocks/mockArrOf10Products';
-import { AppState } from '../../reducers/appReducer';
-import { KEY_IN_LS } from '../../utils/localStorage';
 
 describe('Header tests', () => {
-  it('Test doesnt work', async () => {
-    const routeObject: RouteObject = {
-      element: <Header isLoading={false} setIsLoading={vi.fn()} />,
-      path: '/',
-    };
-    const state: AppState = {
-      products: mockArrOf10Products,
-      total: 100,
-      page: 1,
-      limit: 10,
-      query: '',
-    };
-    const { getByTestId } = renderWithRouterAndContext(
-      routeObject,
-      routes,
-      '/',
-      state
-    );
+  it('Verify that clicking the Search button saves the entered value to the local storage', async () => {
+    const { getByTestId } = renderWithRouterAndRedux(<Header />);
 
+    localStorage.removeItem(KEY_IN_LS);
     const typedText = Date.now().toString();
     const input = getByTestId('search-input');
     const button = getByTestId('search-button');
@@ -35,6 +16,14 @@ describe('Header tests', () => {
     await userEvent.click(button);
     const newLocalStorageValue = localStorage.getItem(KEY_IN_LS);
 
-    expect(newLocalStorageValue).not.toBe(typedText);
+    expect(newLocalStorageValue).toBe(typedText);
+  });
+
+  it('Check that the component retrieves the value from the local storage upon mounting', async () => {
+    const initLsText = Date.now().toString();
+    localStorage.setItem(KEY_IN_LS, initLsText);
+    const { getByTestId } = renderWithRouterAndRedux(null, { routes });
+    const input = getByTestId('search-input');
+    expect(input).toHaveValue(initLsText);
   });
 });

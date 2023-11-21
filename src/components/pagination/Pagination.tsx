@@ -1,27 +1,39 @@
 import React, { ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Pagination.module.css';
-import { DEFAULT_LIMIT } from '../../constants/searchParams';
-import { ActionTypes } from '../../reducers/appReducer';
-import { useAppContext } from '../../hooks/useAppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { ROUTES } from '../../routs/routes';
+import { createSearchParams } from '../../utils/createSearchParams';
+import { DEFAULT_LIMIT } from '../../reducers/ParamsSlise';
 
 function Pagination() {
-  const { state, dispatch } = useAppContext();
-  const { total, limit, page } = state;
+  const { total } = useAppSelector((state) => state.productsReducer);
+  const { limit, page, text } = useAppSelector(
+    (state) => state.appSearchParamsReducer
+  );
+
+  const navigate = useNavigate();
 
   const highestPageNumber = Math.ceil(total / limit);
 
   function handleGoToPage(pageNumber: number) {
-    dispatch({
-      type: ActionTypes.changePage,
-      payload: pageNumber,
+    const newSearchParams = createSearchParams({
+      text,
+      page: pageNumber,
+      limit,
     });
+
+    navigate(`${ROUTES.home}?${newSearchParams.toString()}`);
   }
 
   function handleChangeCountOfItems(event: ChangeEvent<HTMLSelectElement>) {
-    dispatch({
-      type: ActionTypes.changeLimit,
-      payload: Number(event.target.value) || DEFAULT_LIMIT,
+    const newSearchParams = createSearchParams({
+      text,
+      page: 1,
+      limit: Number(event.target.value) || DEFAULT_LIMIT,
     });
+
+    navigate(`${ROUTES.home}?${newSearchParams.toString()}`);
   }
 
   return (

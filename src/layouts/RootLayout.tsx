@@ -1,14 +1,15 @@
+import React from 'react';
 import { Outlet } from 'react-router-dom';
-import React, { useState } from 'react';
 import { Header } from '../components/header/Header';
+import styles from './RootLayout.module.css';
 
 function RootLayout() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   return (
     <>
-      <Header isLoading={isLoading} setIsLoading={setIsLoading} />
-      <Outlet context={isLoading} />
+      <Header />
+      <main className={styles.main}>
+        <Outlet />
+      </main>
     </>
   );
 }

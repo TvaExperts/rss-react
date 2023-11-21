@@ -1,28 +1,24 @@
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import RootLayout from '../layouts/RootLayout';
 import { Fallback } from '../components/fallback/Fallback';
-import {
-  loaderProductDetails,
-  ProductDetails,
-} from '../components/productDetails/ProductDetails';
-import { ROUTS } from './routs';
+import { ROUTES } from './routes';
 import Home from '../pages/home/Home';
+import Details from '../pages/details/Details';
 import NoMatch from '../pages/noMatch/NoMatch';
 
 const routes: RouteObject[] = [
   {
-    path: ROUTS.home,
+    path: ROUTES.home,
     element: <RootLayout />,
     errorElement: <Fallback />,
     children: [
       {
-        path: ROUTS.home,
+        path: ROUTES.home,
         element: <Home />,
         children: [
           {
-            path: `${ROUTS.product}/:productId`,
-            loader: loaderProductDetails,
-            element: <ProductDetails />,
+            path: `${ROUTES.product}/:productId`,
+            element: <Details />,
           },
         ],
       },

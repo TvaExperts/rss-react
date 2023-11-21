@@ -1,9 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
+import { useAppSelector } from '../../hooks/redux';
+import { ROUTES } from '../../routs/routes';
 import { saveNewQueryInLS } from '../../utils/localStorage';
-import { getProductsFromApi } from '../../services/api';
-import { ActionTypes } from '../../reducers/appReducer';
-import { useAppContext } from '../../hooks/useAppContext';
+import { createSearchParams } from '../../utils/createSearchParams';
 
 enum TEXTS {
   INPUT_PLACEHOLDER = 'Product search',
@@ -11,29 +12,31 @@ enum TEXTS {
   BUTTON_SEARCH_LOADING = 'Loading...',
 }
 
-type HeaderProps = {
-  setIsLoading: (isLoading: boolean) => void;
-  isLoading: boolean;
-};
+export function Header() {
+  const { isLoading } = useAppSelector((state) => state.productsReducer);
+  const { text, limit } = useAppSelector(
+    (state) => state.appSearchParamsReducer
+  );
 
-export function Header({ setIsLoading, isLoading }: HeaderProps) {
-  const { state, dispatch } = useAppContext();
-  const { query, limit, page } = state;
-  const [inputText, setInputText] = useState<string>(query);
+  const [inputText, setInputText] = useState<string>(text);
 
   useEffect(() => {
-    if (!limit) return;
-    setIsLoading(true);
-    setInputText(query);
-    saveNewQueryInLS(query);
-    getProductsFromApi(query, limit, page).then((productApiResponse) => {
-      dispatch({ type: ActionTypes.setProducts, payload: productApiResponse });
-      setIsLoading(false);
-    });
-  }, [query, limit, page, dispatch, setIsLoading]);
+    setInputText(text);
+  }, [text]);
+
+  const navigate = useNavigate();
 
   function handleClickSearch() {
-    dispatch({ type: ActionTypes.setQuery, payload: inputText.trim() });
+    const trimmedText = inputText.trim();
+
+    saveNewQueryInLS(trimmedText);
+
+    const newSearchParams = createSearchParams({
+      text: trimmedText,
+      page: 1,
+      limit,
+    });
+    navigate(`${ROUTES.home}?${newSearchParams.toString()}`);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {

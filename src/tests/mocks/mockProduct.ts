@@ -1,6 +1,6 @@
-import { Product } from '../../types';
+import IProduct from '../../models/IProduct';
 
-export const mockProduct: Product = {
+export const mockProduct: IProduct = {
   id: 111,
   title: 'perfume Oil',
   description:

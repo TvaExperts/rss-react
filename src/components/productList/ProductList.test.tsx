@@ -1,55 +1,34 @@
-import { RouteObject } from 'react-router-dom';
-import { renderWithRouterAndContext } from '../../tests/helpers/renderWithRouterAndContext';
-import { routes } from '../../routs/router';
-import { AppState } from '../../reducers/appReducer';
-import { mockArrOf10Products } from '../../tests/mocks/mockArrOf10Products';
+import { vi } from 'vitest';
+import { renderWithRouterAndRedux } from '../../tests/helpers/renderWithRouterAndRedux';
 import ProductList from './ProductList';
-
-const routeObject: RouteObject = {
-  element: <ProductList />,
-  path: '/',
-};
+import { mockArrOf30Products } from '../../tests/mocks/mockArrOf30Products';
+import * as api from '../../services/api';
 
 describe('Product List tests', () => {
-  it('Component renders the specified number of cards', () => {
-    const state: AppState = {
-      products: mockArrOf10Products,
-      total: mockArrOf10Products.length,
-      page: 1,
-      limit: 10,
-      query: '',
-    };
-
-    const { getAllByRole } = renderWithRouterAndContext(
-      routeObject,
-      routes,
-      '/',
-      state
-    );
-    const listItems = getAllByRole('listitem');
-    expect(listItems.length).toBe(mockArrOf10Products.length);
+  it('Component renders the specified number of cards', async () => {
+    const { findAllByRole } = renderWithRouterAndRedux(<ProductList />);
+    const listItems = await findAllByRole('listitem');
+    expect(listItems.length).toBe(mockArrOf30Products.length);
   });
 
-  it('Component renders warning message if no cards are present.', () => {
-    const state: AppState = {
-      products: [],
-      total: 0,
-      page: 1,
-      limit: 10,
-      query: '',
-    };
-
-    const { getByText } = renderWithRouterAndContext(
-      routeObject,
-      routes,
-      '/',
-      state
+  it('Component renders warning message if no cards are present.', async () => {
+    vi.spyOn(api, 'useGetSearchProductsOnPageQuery').mockImplementation(
+      vi.fn().mockImplementation(() => {
+        return {
+          isError: false,
+          isFetching: false,
+          data: {
+            total: 0,
+            products: [],
+          },
+        };
+      })
     );
 
-    const warningMessageElement = getByText(
+    const { findByText } = renderWithRouterAndRedux(<ProductList />);
+    const warningMessageElement = await findByText(
       /Nothing was found, make another request/i
     );
-
     expect(warningMessageElement).toBeInTheDocument();
   });
 });

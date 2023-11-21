@@ -1,39 +1,29 @@
-import { screen } from '@testing-library/react';
-import { RouteObject } from 'react-router-dom';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { renderWithRouterAndContext } from '../../tests/helpers/renderWithRouterAndContext';
 import { routes } from '../../routs/router';
-import { AppState } from '../../reducers/appReducer';
-import { mockArrOf10Products } from '../../tests/mocks/mockArrOf10Products';
-import Home from '../../pages/home/Home';
+import { setupStore } from '../../store';
 
-const routeObject: RouteObject = {
-  element: <Home />,
-  path: '/',
-};
+describe('Pagination test. Search parameters updates(', () => {
+  it('Should update search params after click button next page', async () => {
+    const initSearchParams = '?page=1&query=&limit=10';
 
-describe('Pagination test. Search parameters updates later(', () => {
-  it('Test doesnt work', async () => {
-    const state: AppState = {
-      products: mockArrOf10Products,
-      total: 100,
-      page: 1,
-      limit: 10,
-      query: '',
-    };
+    const router = createMemoryRouter(routes, {
+      initialEntries: [initSearchParams],
+    });
 
-    const { getByTestId } = renderWithRouterAndContext(
-      routeObject,
-      routes,
-      '/',
-      state
+    const store = setupStore();
+
+    const { findByTestId } = render(
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     );
-
-    screen.debug();
-    const nextPage = getByTestId('next-page');
-    const initialSearchParams = new URLSearchParams(window.location.search);
+    const nextPage = await findByTestId('next-page');
+    expect(router.state.location.search).toBe(initSearchParams);
     await userEvent.click(nextPage);
-    const newSearchParams = new URLSearchParams(window.location.search);
-    expect(initialSearchParams.toString()).toBe(newSearchParams.toString());
+    expect(router.state.location.search).not.toBe(initSearchParams);
   });
 });

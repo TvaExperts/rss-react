@@ -10,14 +10,18 @@
     "lint": "eslint src --fix --color",
     "format:fix": "prettier src --ignore-unknown --write",
     "test": "vitest run",
-    "coverage": "vitest run --coverage"
+    "coverage": "npx vitest run --coverage.enabled --coverage.provider=v8 --coverage.all",
+    "prepare": "husky install"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.7",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.0",
     "axios": "^1.6.0",
+    "msw": "^2.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^8.1.3",
     "react-router-dom": "^6.17.0"
   },
   "devDependencies": {
