@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import IProduct from '../../models/IProduct';
 import styles from './ListItem.module.css';
 import { ROUTES } from '../../routes/routes';
+import IProduct from '../../models/IProduct';
 
 export const DESCRIPTION_LENGTH = 50;
 

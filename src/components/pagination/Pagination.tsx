@@ -4,7 +4,7 @@ import { useAppSelector } from '../../hooks/redux';
 import styles from './Pagination.module.css';
 import { ROUTES } from '../../routes/routes';
 import { createSearchParams } from '../../utils/createSearchParams';
-import { DEFAULT_LIMIT } from '../../reducers/ParamsSlise';
+import { DEFAULT_LIMIT } from '../../reducers/ParamsSlice';
 
 function Pagination() {
   const { total } = useAppSelector((state) => state.productsReducer);

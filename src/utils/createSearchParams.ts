@@ -1,4 +1,4 @@
-import { AppSearchParams } from '../reducers/ParamsSlise';
+import { AppSearchParams } from '../reducers/ParamsSlice';
 import { SEARCH_PARAMETERS } from '../models/searchParameters';
 
 export function createSearchParams(appSearchParams: AppSearchParams) {
