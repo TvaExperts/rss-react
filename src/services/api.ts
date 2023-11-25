@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { HYDRATE } from 'next-redux-wrapper';
 import { AppSearchParams } from '../reducers/ParamsSlice';
 import IProduct from '../models/IProduct';
 
@@ -13,11 +14,11 @@ export const productApi = createApi({
   reducerPath: 'productApi',
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   // eslint-disable-next-line consistent-return
-  // extractRehydrationInfo(action, { reducerPath }) {
-  //   if (action.type === HYDRATE) {
-  //     return action.payload[reducerPath];
-  //   }
-  // },
+  extractRehydrationInfo(action, { reducerPath }) {
+    if (action.type === HYDRATE) {
+      return action.payload[reducerPath];
+    }
+  },
   endpoints: (builder) => ({
     getSearchProductsOnPage: builder.query<
       ProductsApiResponse,
@@ -33,9 +34,9 @@ export const productApi = createApi({
       }),
     }),
 
-    // getProductById: builder.query<IProduct, string>({
-    //   query: (id) => ({ url: `/${id}` }),
-    // }),
+    getProductById: builder.query<IProduct, string>({
+      query: (id) => ({ url: `/${id}` }),
+    }),
   }),
 });
 

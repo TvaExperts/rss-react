@@ -4,14 +4,10 @@ import styles from '../../styles/detailProduct.module.css';
 import { ROUTES } from '../../routes/routes';
 import MainContainer from '../../components/mainContainer/MainContainer';
 import IProduct from '../../models/IProduct';
-import {
-  getProductById,
-  getProductsFromApi,
-  ProductsApiResponse,
-} from '../../services/api-axios';
 import { wrapper } from '../../store';
 import { useAppSelector } from '../../hooks/redux';
 import { createSearchParams } from '../../utils/createSearchParams';
+import { productApi, ProductsApiResponse } from '../../services/api';
 
 enum TEXTS {
   BUTTON_CLOSE = 'Close',
@@ -39,7 +35,7 @@ function DetailsPage({ product, productsData }: DetailsPageProps) {
     }
   }
 
-  const { title } = product;
+  const { title, description } = product;
 
   return (
     <MainContainer productsApiResponse={productsData}>
@@ -54,7 +50,7 @@ function DetailsPage({ product, productsData }: DetailsPageProps) {
           data-testid="product-details"
         >
           <h2 data-testid="product-title">{title}</h2>
-          <p data-testid="product-description">{title}</p>
+          <p data-testid="product-description">{description}</p>
           {/* <img src={images[0]} alt={title} /> */}
           <br />
 
@@ -74,11 +70,15 @@ function DetailsPage({ product, productsData }: DetailsPageProps) {
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
     const appSearchParams = store.getState().appSearchParamsReducer;
-    const productsData = await getProductsFromApi(appSearchParams);
+    const { data: productsData } = await store.dispatch(
+      productApi.endpoints.getSearchProductsOnPage.initiate(appSearchParams)
+    );
 
     const { productId } = context.params;
 
-    const { data: product } = await getProductById(productId.toString());
+    const { data: product } = await store.dispatch(
+      productApi.endpoints.getProductById.initiate(productId.toString())
+    );
 
     return {
       props: { productsData, product },

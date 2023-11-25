@@ -1,7 +1,7 @@
 import React from 'react';
 import { Header } from '../header/Header';
 import ProductList from '../productList/ProdustList';
-import { ProductsApiResponse } from '../../services/api-axios';
+import { ProductsApiResponse } from '../../services/api';
 
 type MainContainerProps = {
   productsApiResponse: ProductsApiResponse;

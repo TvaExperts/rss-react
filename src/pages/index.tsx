@@ -6,7 +6,12 @@ import {
   appSearchParamsActions,
   DEFAULT_LIMIT,
 } from '../reducers/ParamsSlice';
-import { getProductsFromApi } from '../services/api-axios';
+import { productApi } from '../services/api';
+import { SEARCH_PARAMETERS } from '../models/searchParameters';
+
+export default function Home({ data }) {
+  return <MainContainer productsApiResponse={data} />;
+}
 
 function isEmptySearchParams(parsedUrlQuery: ParsedUrlQuery) {
   const { page, limit, query } = parsedUrlQuery;
@@ -20,14 +25,17 @@ function fillSearchParams(
   const { page, limit, query } = parsedUrlQuery;
   const newSearchParams = new URLSearchParams();
   newSearchParams.set(
-    'page',
+    SEARCH_PARAMETERS.page,
     page ? page.toString() : appSearchParams.page.toString(10)
   );
   newSearchParams.set(
-    'limit',
+    SEARCH_PARAMETERS.limit,
     limit ? limit.toString() : appSearchParams.limit.toString(10)
   );
-  newSearchParams.set('query', query?.toString() || appSearchParams.text);
+  newSearchParams.set(
+    SEARCH_PARAMETERS.query,
+    query?.toString() || appSearchParams.text
+  );
   return newSearchParams;
 }
 
@@ -52,16 +60,16 @@ export const getServerSideProps = wrapper.getServerSideProps(
       limit: limit ? Number(limit.toString()) : DEFAULT_LIMIT,
       text: query ? query.toString() : '',
     };
+
     store.dispatch(appSearchParamsActions.setParams(appSearchParams));
 
-    const data = await getProductsFromApi(appSearchParams);
+    const { data } = await store.dispatch(
+      productApi.endpoints.getSearchProductsOnPage.initiate(appSearchParams)
+    );
+    await Promise.all(store.dispatch(productApi.util.getRunningQueriesThunk()));
 
     return {
       props: { data },
     };
   }
 );
-
-export default function Home({ data }) {
-  return <MainContainer productsApiResponse={data} />;
-}
