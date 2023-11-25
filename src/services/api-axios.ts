@@ -19,7 +19,7 @@ function createSearchParamsPartURL(appSearchParams: AppSearchParams) {
 
   const searchParams = new URLSearchParams();
   searchParams.set('limit', limit.toString());
-  searchParams.set('skip', ((page - 1) * page).toString());
+  searchParams.set('skip', ((page - 1) * limit).toString());
   searchParams.set('q', text || '');
 
   return searchParams.toString();

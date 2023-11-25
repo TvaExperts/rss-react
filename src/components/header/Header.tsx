@@ -1,6 +1,9 @@
 import React, { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './Header.module.css';
+import { useAppSelector } from '../../hooks/redux';
+import { createSearchParams } from '../../utils/createSearchParams';
+import { ROUTES } from '../../routes/routes';
 
 enum TEXTS {
   INPUT_PLACEHOLDER = 'Product search',
@@ -10,10 +13,19 @@ enum TEXTS {
 export function Header() {
   const router = useRouter();
 
-  const [inputText, setInputText] = useState<string>('');
+  const { limit, page, text } = useAppSelector(
+    (state) => state.appSearchParamsReducer
+  );
+  const [inputText, setInputText] = useState<string>(text);
 
   function handleClickSearch() {
-    console.log(router.asPath);
+    const newSearchParams = createSearchParams({
+      text: inputText,
+      page,
+      limit,
+    });
+
+    router.push(`${ROUTES.home}?${newSearchParams.toString()}`);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
