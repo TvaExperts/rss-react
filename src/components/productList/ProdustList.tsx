@@ -2,11 +2,9 @@ import React from 'react';
 
 import styles from './ProductList.module.css';
 import { ListItem } from '../listItem/ListItem';
-import {
-  APP_SEARCH_DEF,
-  useGetSearchProductsOnPageQuery,
-} from '../../services/api';
+import { ProductsApiResponse } from '../../services/api';
 import IProduct from '../../models/IProduct';
+import Pagination from '../pagination/Pagination';
 
 // enum TEXTS {
 //   LOADING = 'Loading data...',
@@ -14,10 +12,17 @@ import IProduct from '../../models/IProduct';
 //   NOT_FOUND = 'Nothing was found, make another request',
 // }
 
-function ProductList() {
-  const { data: productsData } =
-    useGetSearchProductsOnPageQuery(APP_SEARCH_DEF);
-  const { products } = productsData;
+type ProductListProps = {
+  productsApiResponse: ProductsApiResponse;
+};
+
+function ProductList({ productsApiResponse }: ProductListProps) {
+  // const { data: productsData } =
+  //   useGetSearchProductsOnPageQuery(APP_SEARCH_DEF);
+  // const { products } = productsData;
+
+  const { products, total } = productsApiResponse;
+  // const a = useAppSelector((state) => state);
 
   // useSetupSearchParams();
   // useUpdateAppSearchParams();
@@ -49,7 +54,7 @@ function ProductList() {
 
   return (
     <div className={styles.productListBlock}>
-      {/* <Pagination /> */}
+      <Pagination total={total} />
       <ul>
         {products.map((product: IProduct) => {
           return <ListItem product={product} key={product.id} />;

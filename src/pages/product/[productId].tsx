@@ -1,28 +1,36 @@
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
-import { GetServerSidePropsContext } from 'next';
-import { TODO } from '../../models/Temp';
 import styles from '../../styles/detailProduct.module.css';
 import { ROUTES } from '../../routes/routes';
 import MainContainer from '../../components/mainContainer/MainContainer';
+import IProduct from '../../models/IProduct';
+import {
+  getProductById,
+  getProductsFromApi,
+  ProductsApiResponse,
+} from '../../services/api-axios';
+import { wrapper } from '../../store';
+import { useAppSelector } from '../../hooks/redux';
+import { createSearchParams } from '../../utils/createSearchParams';
 
 enum TEXTS {
   BUTTON_CLOSE = 'Close',
 }
 
 type DetailsPageProps = {
-  product: TODO;
-  products: TODO[];
-  total: number;
+  product: IProduct;
+  productsData: ProductsApiResponse;
 };
 
-function DetailsPage({ product, products, total }: DetailsPageProps) {
+function DetailsPage({ product, productsData }: DetailsPageProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const appSearchParams = useAppSelector(
+    (state) => state.appSearchParamsReducer
+  );
   function handleCloseDetails() {
-    // console.log('Close');
-    //  const newSearchParams = createSearchParams(appSearchParams);
-    router.push(ROUTES.home);
+    const newSearchParams = createSearchParams(appSearchParams);
+    router.push(`${ROUTES.home}?${newSearchParams.toString()}`);
   }
 
   function handleClickOverlay(eventTarget: EventTarget) {
@@ -34,7 +42,7 @@ function DetailsPage({ product, products, total }: DetailsPageProps) {
   const { title } = product;
 
   return (
-    <MainContainer productsData={{ products, total }}>
+    <MainContainer productsApiResponse={productsData}>
       <div
         className={styles.overlay}
         onClick={(e) => handleClickOverlay(e.target)}
@@ -63,15 +71,19 @@ function DetailsPage({ product, products, total }: DetailsPageProps) {
   );
 }
 
-const API_URL = 'https://jsonplaceholder.typicode.com/todos';
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    const appSearchParams = store.getState().appSearchParamsReducer;
+    const productsData = await getProductsFromApi(appSearchParams);
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { productId } = context.query;
-  const res = await fetch(`${API_URL}/${productId}`);
-  const product: TODO = await res.json();
-  const res2 = await fetch(API_URL);
-  const products: TODO[] = await res2.json();
-  return { props: { product, products, total: products.length } };
-}
+    const { productId } = context.params;
+
+    const { data: product } = await getProductById(productId.toString());
+
+    return {
+      props: { productsData, product },
+    };
+  }
+);
 
 export default DetailsPage;
