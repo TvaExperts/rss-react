@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
+import Image from 'next/image';
 import styles from '../../styles/detailProduct.module.css';
 import { ROUTES } from '../../routes/routes';
 import MainContainer from '../../components/mainContainer/MainContainer';
@@ -37,7 +38,7 @@ function DetailsPage({ product, productsData }: DetailsPageProps) {
     }
   }
 
-  const { title, description } = product;
+  const { title, description, images } = product;
 
   return (
     <MainContainer productsApiResponse={productsData}>
@@ -53,7 +54,7 @@ function DetailsPage({ product, productsData }: DetailsPageProps) {
         >
           <h2 data-testid="product-title">{title}</h2>
           <p data-testid="product-description">{description}</p>
-          {/* <img src={images[0]} alt={title} /> */}
+          <Image src={images[0]} alt={title} width={300} height={300} />
           <br />
 
           <button
@@ -75,10 +76,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
       context.query
     );
 
+    const { productId } = context.params;
+
     if (isEmptySearchParams(context.query)) {
       return {
         redirect: {
-          destination: `${ROUTES.product}/?${appSearchParams.toString()}`,
+          destination: `${ROUTES.product}/${productId}?${createSearchParams(
+            appSearchParams
+          )}`,
           permanent: false,
         },
       };
@@ -87,8 +92,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
     const { data: productsData } = await store.dispatch(
       productApi.endpoints.getSearchProductsOnPage.initiate(appSearchParams)
     );
-
-    const { productId } = context.params;
 
     const { data: product } = await store.dispatch(
       productApi.endpoints.getProductById.initiate(productId.toString())

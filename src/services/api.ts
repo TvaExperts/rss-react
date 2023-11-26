@@ -15,7 +15,6 @@ export const productApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   // eslint-disable-next-line consistent-return
   extractRehydrationInfo(action, { reducerPath }) {
-    console.log(action.type);
     if (action.type === HYDRATE) {
       return action.payload[reducerPath];
     }
