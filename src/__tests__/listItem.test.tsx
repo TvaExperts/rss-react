@@ -1,14 +1,19 @@
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import mockRouter from 'next-router-mock';
+import { expect, vi } from 'vitest';
 import { DESCRIPTION_LENGTH, ListItem } from '../components/listItem/ListItem';
 import { mockProduct } from './mocks/mockProduct';
 
-jest.mock('next/router', () => jest.requireActual('next-router-mock'));
+vi.mock('next/router', () => {
+  return {
+    useRouter: () => {
+      return { query: {} };
+    },
+  };
+});
 
 describe('Tests for the List Item component', () => {
-  it('Verify that the component renders the specified number of cards', () => {
-    mockRouter.push('/');
+  it('Verify that the component renders product info', () => {
     const { getByTestId } = render(<ListItem product={mockProduct} />);
 
     const titleElement = getByTestId('item-title');

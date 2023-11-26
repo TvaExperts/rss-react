@@ -77,7 +77,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
     );
 
     const { productId } = context.params;
-
     if (isEmptySearchParams(context.query)) {
       return {
         redirect: {
@@ -92,15 +91,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
     const { data: productsData } = await store.dispatch(
       productApi.endpoints.getSearchProductsOnPage.initiate(appSearchParams)
     );
-
     const { data: product } = await store.dispatch(
       productApi.endpoints.getProductById.initiate(productId.toString())
     );
-
     return {
       props: { productsData, product },
     };
   }
 );
-
 export default DetailsPage;
