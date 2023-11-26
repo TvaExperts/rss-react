@@ -5,9 +5,13 @@ import { ROUTES } from '../../routes/routes';
 import MainContainer from '../../components/mainContainer/MainContainer';
 import IProduct from '../../models/IProduct';
 import { wrapper } from '../../store';
-import { useAppSelector } from '../../hooks/redux';
-import { createSearchParams } from '../../utils/createSearchParams';
+import {
+  createSearchParams,
+  getAppSearchParamsFromQuery,
+  isEmptySearchParams,
+} from '../../utils/searchParams';
 import { productApi, ProductsApiResponse } from '../../services/api';
+import { AppSearchParams } from '../../models/searchParameters';
 
 enum TEXTS {
   BUTTON_CLOSE = 'Close',
@@ -21,12 +25,10 @@ type DetailsPageProps = {
 function DetailsPage({ product, productsData }: DetailsPageProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const appSearchParams = useAppSelector(
-    (state) => state.appSearchParamsReducer
-  );
+
   function handleCloseDetails() {
-    const newSearchParams = createSearchParams(appSearchParams);
-    router.push(`${ROUTES.home}?${newSearchParams.toString()}`);
+    const appSearchParams = getAppSearchParamsFromQuery(router.query);
+    router.push(`${ROUTES.home}?${createSearchParams(appSearchParams)}`);
   }
 
   function handleClickOverlay(eventTarget: EventTarget) {
@@ -69,7 +71,19 @@ function DetailsPage({ product, productsData }: DetailsPageProps) {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
-    const appSearchParams = store.getState().appSearchParamsReducer;
+    const appSearchParams: AppSearchParams = getAppSearchParamsFromQuery(
+      context.query
+    );
+
+    if (isEmptySearchParams(context.query)) {
+      return {
+        redirect: {
+          destination: `${ROUTES.product}/?${appSearchParams.toString()}`,
+          permanent: false,
+        },
+      };
+    }
+
     const { data: productsData } = await store.dispatch(
       productApi.endpoints.getSearchProductsOnPage.initiate(appSearchParams)
     );

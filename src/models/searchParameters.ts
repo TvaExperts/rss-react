@@ -4,4 +4,13 @@ const SEARCH_PARAMETERS = {
   query: 'query',
 } as const;
 
-export { SEARCH_PARAMETERS };
+const DEFAULT_LIMIT = 10;
+
+interface AppSearchParams {
+  text: string;
+  limit: number;
+  page: number;
+}
+
+export { SEARCH_PARAMETERS, DEFAULT_LIMIT };
+export type { AppSearchParams };

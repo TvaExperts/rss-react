@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { HYDRATE } from 'next-redux-wrapper';
-import { AppSearchParams } from '../reducers/ParamsSlice';
 import IProduct from '../models/IProduct';
+import { AppSearchParams } from '../models/searchParameters';
 
 export const BASE_URL = 'https://dummyjson.com/products';
 
@@ -15,6 +15,7 @@ export const productApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   // eslint-disable-next-line consistent-return
   extractRehydrationInfo(action, { reducerPath }) {
+    console.log(action.type);
     if (action.type === HYDRATE) {
       return action.payload[reducerPath];
     }
@@ -42,5 +43,4 @@ export const productApi = createApi({
 
 export const {
   util: { getRunningQueriesThunk },
-  useGetSearchProductsOnPageQuery,
 } = productApi;

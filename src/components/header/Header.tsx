@@ -1,8 +1,10 @@
 import React, { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './Header.module.css';
-import { useAppSelector } from '../../hooks/redux';
-import { createSearchParams } from '../../utils/createSearchParams';
+import {
+  createSearchParams,
+  getAppSearchParamsFromQuery,
+} from '../../utils/searchParams';
 import { ROUTES } from '../../routes/routes';
 
 enum TEXTS {
@@ -12,10 +14,8 @@ enum TEXTS {
 
 export function Header() {
   const router = useRouter();
+  const { limit, page, text } = getAppSearchParamsFromQuery(router.query);
 
-  const { limit, page, text } = useAppSelector(
-    (state) => state.appSearchParamsReducer
-  );
   const [inputText, setInputText] = useState<string>(text);
 
   function handleClickSearch() {

@@ -1,21 +1,20 @@
 import React, { ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
-import { useAppSelector } from '../../hooks/redux';
 import styles from './Pagination.module.css';
 import { ROUTES } from '../../routes/routes';
-import { createSearchParams } from '../../utils/createSearchParams';
-import { DEFAULT_LIMIT } from '../../reducers/ParamsSlice';
+import {
+  createSearchParams,
+  getAppSearchParamsFromQuery,
+} from '../../utils/searchParams';
+import { DEFAULT_LIMIT } from '../../models/searchParameters';
 
 type PaginationProps = {
   total: number;
 };
 
 function Pagination({ total }: PaginationProps) {
-  const { limit, page, text } = useAppSelector(
-    (state) => state.appSearchParamsReducer
-  );
-
   const router = useRouter();
+  const { limit, page, text } = getAppSearchParamsFromQuery(router.query);
 
   const highestPageNumber = Math.ceil(total / limit);
 

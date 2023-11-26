@@ -1,25 +1,12 @@
-import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
-import { createWrapper, HYDRATE } from 'next-redux-wrapper';
+import { configureStore } from '@reduxjs/toolkit';
+import { createWrapper } from 'next-redux-wrapper';
 import { productApi } from './services/api';
-import { appSearchParamsReducer } from './reducers/ParamsSlice';
 
-export type RootState = ReturnType<typeof rootReducer>;
-
-const rootReducer = combineReducers({
-  appSearchParamsReducer,
-  [productApi.reducerPath]: productApi.reducer,
-});
-
-const masterReducer = (state: RootState, action: AnyAction) => {
-  if (action.type === HYDRATE) {
-    return { ...state, ...action.payload };
-  }
-  return rootReducer(state, action);
-};
+export type RootState = ReturnType<typeof productApi.reducer>;
 
 export const makeStore = () =>
   configureStore({
-    reducer: masterReducer,
+    reducer: { [productApi.reducerPath]: productApi.reducer },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(productApi.middleware),
     devTools: true,
