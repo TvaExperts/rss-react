@@ -9,7 +9,7 @@
     "lint": "next lint src",
     "format:fix": "prettier src --ignore-unknown --write",
     "prepare": "husky install",
-    "test": "vitest",
+    "test": "vitest run",
     "coverage": "npx vitest run --coverage"
   },
   "dependencies": {
