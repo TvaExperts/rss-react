@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header } from '../header/Header';
-import ProductList from '../productList/ProdustList';
+import ProductList from '../productList/ProductList';
 import { ProductsApiResponse } from '../../services/api';
 
 type MainContainerProps = {
