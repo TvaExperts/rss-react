@@ -11,8 +11,8 @@ const initialState: FormsDataState = {
   dataLines: [],
 };
 
-const FormsDataStoreSlice = createSlice({
-  name: 'formsDataStore',
+const FormsDataSlice = createSlice({
+  name: 'formsData',
   initialState,
   reducers: {
     addLine(state, action: PayloadAction<FormDataLine>) {
@@ -21,7 +21,5 @@ const FormsDataStoreSlice = createSlice({
   },
 });
 
-export const {
-  reducer: formsStoreSliceReducer,
-  actions: formsStoreSliceActions,
-} = FormsDataStoreSlice;
+export const { reducer: formsDataReducer, actions: formsDataActions } =
+  FormsDataSlice;

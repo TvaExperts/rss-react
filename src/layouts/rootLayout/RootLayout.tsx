@@ -9,7 +9,7 @@ function RootLayout() {
       <header className={styles.header}>
         <Navigation />
       </header>
-      <main>
+      <main className={styles.main}>
         <Outlet />
       </main>
     </>

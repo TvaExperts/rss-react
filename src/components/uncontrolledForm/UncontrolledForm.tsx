@@ -1,13 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../hooks/redux';
-import { formsDataActions } from '../reducers/FormsDataSlice';
-import { Countries, FormDataLine, FormType, GendersType } from '../types';
-import ROUTES from '../router/routes';
+import { useAppDispatch } from '../../hooks/redux';
+import { Countries, FormDataLine, FormType, GendersType } from '../../types';
+import { formsDataActions } from '../../reducers/FormsDataSlice';
+import ROUTES from '../../router/routes';
 
-function ReactHookFormPage() {
-  const dispatch = useAppDispatch();
+function UncontrolledForm() {
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
   function onClick() {
     const dataLine: FormDataLine = {
       name: 'Name',
@@ -15,8 +16,8 @@ function ReactHookFormPage() {
       picture: 'fdf',
       email: 'sd',
       password: 'sad',
-      gender: GendersType.female,
-      formType: FormType.reactHook,
+      gender: GendersType.male,
+      formType: FormType.uncontrolled,
       date: new Date().toLocaleTimeString(),
       country: Countries.Argentina,
     };
@@ -24,10 +25,10 @@ function ReactHookFormPage() {
     dispatch(formsDataActions.addLine(dataLine));
     navigate(ROUTES.home);
   }
-
   return (
     <div>
-      <h1>React Hook Form Page</h1>
+      <p>AAA</p>
+
       <button type="button" onClick={onClick}>
         Add line
       </button>
@@ -35,4 +36,4 @@ function ReactHookFormPage() {
   );
 }
 
-export default ReactHookFormPage;
+export default UncontrolledForm;
