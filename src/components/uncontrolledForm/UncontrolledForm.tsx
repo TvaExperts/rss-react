@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CountryInput } from 'components';
 import { useAppDispatch } from '../../hooks/redux';
 import { Countries, FormDataLine, FormType, GendersType } from '../../types';
 import { formsDataActions } from '../../reducers/FormsDataSlice';
@@ -33,7 +34,6 @@ function UncontrolledForm() {
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
   const genderRef = useRef<HTMLSelectElement>(null);
-  const countryRef = useRef<HTMLInputElement>(null);
   const acceptTCRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -76,10 +76,7 @@ function UncontrolledForm() {
             <option>Female</option>
           </select>
         </label>
-        <label htmlFor="country">
-          Country:
-          <input type="text" name="country" id="country" ref={countryRef} />
-        </label>
+        <CountryInput />
         <label htmlFor="acceptTC">
           Accept T&C:
           <input

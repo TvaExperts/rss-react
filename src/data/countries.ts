@@ -45,7 +45,6 @@ export const COUNTRIES = [
   'Colombia',
   'Comoros',
   'Congo',
-  'Congo',
   'Cook Islands',
   'Costa Rica',
   "Cote d'Ivoire",
