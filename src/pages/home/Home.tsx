@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DataLine } from 'components/index';
+import { DataLine } from 'components';
 import { useAppSelector } from '../../hooks/redux';
 import styles from './Home.module.css';
 

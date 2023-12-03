@@ -1,5 +1,5 @@
 import React from 'react';
-import { UncontrolledForm } from 'components/index';
+import { UncontrolledForm } from 'components';
 
 function UncontrolledFormPage() {
   return (

@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CountryInput, ImageInput } from 'components';
+import { CountryInput, ImageInput } from 'components/index';
 import { useAppDispatch } from '../../hooks/redux';
 import { FormDataLine, FormType, GendersType } from '../../types';
 import { formsDataActions } from '../../reducers/FormsDataSlice';
 import ROUTES from '../../router/routes';
-import styles from './UncontrolledForm.module.css';
+import styles from './Form.module.css';
 
 function UncontrolledForm() {
   const navigate = useNavigate();

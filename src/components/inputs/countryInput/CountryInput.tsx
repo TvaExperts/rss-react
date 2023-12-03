@@ -1,6 +1,6 @@
 import { forwardRef, useState } from 'react';
 import styles from './CountryInput.module.css';
-import { useAppSelector } from '../../hooks/redux';
+import { useAppSelector } from '../../../hooks/redux';
 
 function filterCountries(countries: string[], query: string) {
   const countriesStartsWith = countries.filter((country) =>
@@ -42,13 +42,11 @@ const CountryInput = forwardRef<HTMLInputElement>((_, ref) => {
         id="country"
         className={styles.input}
         ref={ref}
-        // onBlur={handleBlur}
       />
       {text.length !== 0 && filteredCountries.length !== 0 && isOpen && (
         <ul className={styles.list}>
           {filteredCountries.map((country) => {
             return (
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
               <li
                 className={styles.item}
                 key={country}
