@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CountryInput } from 'components';
 import { useAppDispatch } from '../../hooks/redux';
-import { Countries, FormDataLine, FormType, GendersType } from '../../types';
+import { FormDataLine, FormType, GendersType } from '../../types';
 import { formsDataActions } from '../../reducers/FormsDataSlice';
 import ROUTES from '../../router/routes';
 import styles from './UncontrolledForm.module.css';
@@ -11,45 +11,50 @@ function UncontrolledForm() {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
-  function onSubmit() {
+
+  const formRefs = {
+    name: useRef<HTMLInputElement>(null),
+    age: useRef<HTMLInputElement>(null),
+    email: useRef<HTMLInputElement>(null),
+    password: useRef<HTMLInputElement>(null),
+    passwordConfirm: useRef<HTMLInputElement>(null),
+    gender: useRef<HTMLSelectElement>(null),
+    acceptTC: useRef<HTMLInputElement>(null),
+    country: React.createRef<HTMLInputElement>(),
+  };
+
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     const dataLine: FormDataLine = {
-      name: 'Name',
-      age: 22,
-      picture: 'fdf',
-      email: 'sd',
-      password: 'sad',
+      name: formRefs.name?.current?.value || 'Noname',
+      age: Number(formRefs.age?.current?.value) || 0,
+      picture: 'picture',
+      email: formRefs.email?.current?.value || 'temp@gmail.com',
+      password: formRefs.password?.current?.value || 'password',
       gender: GendersType.male,
       formType: FormType.uncontrolled,
       date: new Date().toLocaleTimeString(),
-      country: Countries.Argentina,
+      country: formRefs.country?.current?.value || 'Mali',
     };
 
     dispatch(formsDataActions.addLine(dataLine));
     navigate(ROUTES.home);
   }
 
-  const nameRef = useRef<HTMLInputElement>(null);
-  const ageRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const passwordConfirmRef = useRef<HTMLInputElement>(null);
-  const genderRef = useRef<HTMLSelectElement>(null);
-  const acceptTCRef = useRef<HTMLInputElement>(null);
-
   return (
     <div>
       <form onSubmit={onSubmit} className={styles.form}>
         <label htmlFor="name">
           Name:
-          <input type="text" name="name" id="name" ref={nameRef} />
+          <input type="text" name="name" id="name" ref={formRefs.name} />
         </label>
         <label htmlFor="age">
           Age:
-          <input type="number" name="age" id="age" ref={ageRef} />
+          <input type="number" name="age" id="age" ref={formRefs.age} />
         </label>
         <label htmlFor="email">
           Email:
-          <input type="email" name="email" id="email" ref={emailRef} />
+          <input type="email" name="email" id="email" ref={formRefs.email} />
         </label>
         <label htmlFor="password">
           Password:
@@ -57,7 +62,7 @@ function UncontrolledForm() {
             type="password"
             name="password"
             id="password"
-            ref={passwordRef}
+            ref={formRefs.password}
           />
         </label>
         <label htmlFor="passwordConfirm">
@@ -66,24 +71,24 @@ function UncontrolledForm() {
             type="password"
             name="passwordConfirm"
             id="passwordConfirm"
-            ref={passwordConfirmRef}
+            ref={formRefs.passwordConfirm}
           />
         </label>
         <label htmlFor="gender">
           Gender:
-          <select ref={genderRef}>
+          <select ref={formRefs.gender}>
             <option>Male</option>
             <option>Female</option>
           </select>
         </label>
-        <CountryInput />
+        <CountryInput ref={formRefs.country} />
         <label htmlFor="acceptTC">
           Accept T&C:
           <input
             type="checkbox"
             name="acceptTC"
             id="acceptTC"
-            ref={acceptTCRef}
+            ref={formRefs.acceptTC}
           />
         </label>
 

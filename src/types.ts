@@ -14,12 +14,6 @@ export enum GendersType {
   female,
 }
 
-export enum Countries {
-  Argentina,
-  Usa,
-  Chile,
-}
-
 export interface FormDataLine {
   name: string;
   age: number;
@@ -27,7 +21,7 @@ export interface FormDataLine {
   password: string;
   gender: GendersType;
   picture: string;
-  country: Countries;
+  country: string;
   formType: FormType;
   date: string;
 }

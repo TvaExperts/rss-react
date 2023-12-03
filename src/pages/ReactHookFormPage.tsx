@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../hooks/redux';
 import { formsDataActions } from '../reducers/FormsDataSlice';
-import { Countries, FormDataLine, FormType, GendersType } from '../types';
+import { FormDataLine, FormType, GendersType } from '../types';
 import ROUTES from '../router/routes';
 
 function ReactHookFormPage() {
@@ -18,7 +18,7 @@ function ReactHookFormPage() {
       gender: GendersType.female,
       formType: FormType.reactHook,
       date: new Date().toLocaleTimeString(),
-      country: Countries.Argentina,
+      country: 'Togo',
     };
 
     dispatch(formsDataActions.addLine(dataLine));

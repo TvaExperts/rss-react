@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import styles from './CountryInput.module.css';
 import { useAppSelector } from '../../hooks/redux';
 
@@ -14,7 +14,7 @@ function filterCountries(countries: string[], query: string) {
   return [...countriesStartsWith, ...otherMatchCountries];
 }
 
-function CountryInput() {
+const CountryInput = forwardRef<HTMLInputElement>((_, ref) => {
   const [text, setText] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { countries } = useAppSelector((state) => state.countriesReducer);
@@ -31,10 +31,6 @@ function CountryInput() {
     setIsOpen(!isOpen);
   }
 
-  // function handleBlur() {
-  //   if (!countries.includes(text)) setText('');
-  // }
-
   return (
     <label htmlFor="country" className={styles.label}>
       Country:
@@ -45,6 +41,7 @@ function CountryInput() {
         onChange={(event) => handleChangeText(event.target.value)}
         id="country"
         className={styles.input}
+        ref={ref}
         // onBlur={handleBlur}
       />
       {text.length !== 0 && filteredCountries.length !== 0 && isOpen && (
@@ -65,6 +62,6 @@ function CountryInput() {
       )}
     </label>
   );
-}
+});
 
 export default CountryInput;
