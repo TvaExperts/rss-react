@@ -20,7 +20,7 @@ export interface FormDataLine {
   email: string;
   password: string;
   gender: GendersType;
-  picture: string;
+  image: string;
   country: string;
   formType: FormType;
   date: string;

@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CountryInput } from 'components';
+import { CountryInput, ImageInput } from 'components';
 import { useAppDispatch } from '../../hooks/redux';
 import { FormDataLine, FormType, GendersType } from '../../types';
 import { formsDataActions } from '../../reducers/FormsDataSlice';
@@ -11,6 +11,7 @@ function UncontrolledForm() {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
+  const [imageData, setImageData] = useState<string>('');
 
   const formRefs = {
     name: useRef<HTMLInputElement>(null),
@@ -20,6 +21,7 @@ function UncontrolledForm() {
     passwordConfirm: useRef<HTMLInputElement>(null),
     gender: useRef<HTMLSelectElement>(null),
     acceptTC: useRef<HTMLInputElement>(null),
+    image: React.createRef<HTMLInputElement>(),
     country: React.createRef<HTMLInputElement>(),
   };
 
@@ -28,7 +30,7 @@ function UncontrolledForm() {
     const dataLine: FormDataLine = {
       name: formRefs.name?.current?.value || 'Noname',
       age: Number(formRefs.age?.current?.value) || 0,
-      picture: 'picture',
+      image: imageData,
       email: formRefs.email?.current?.value || 'temp@gmail.com',
       password: formRefs.password?.current?.value || 'password',
       gender: GendersType.male,
@@ -81,6 +83,8 @@ function UncontrolledForm() {
             <option>Female</option>
           </select>
         </label>
+        <ImageInput ref={formRefs.image} setImageData={setImageData} />
+
         <CountryInput ref={formRefs.country} />
         <label htmlFor="acceptTC">
           Accept T&C:
