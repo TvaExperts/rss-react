@@ -22,7 +22,7 @@ function ReactHookForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     getValues,
     setValue,
     watch,
@@ -178,7 +178,9 @@ function ReactHookForm() {
         )}
       </label>
 
-      <button type="submit">Submit</button>
+      <button type="submit" disabled={!!Object.keys(errors).length || isDirty}>
+        Submit
+      </button>
     </form>
   );
 }
