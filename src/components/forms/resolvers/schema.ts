@@ -1,7 +1,8 @@
 import * as yup from 'yup';
-import { FormDataLine } from '../../../types';
+import { FormDataInputs } from '../../../types';
+import { COUNTRIES } from '../../../data/countries';
 
-const schema = yup.object<FormDataLine>().shape({
+const schema = yup.object<FormDataInputs>().shape({
   name: yup
     .string()
     .required('Name is required')
@@ -43,12 +44,48 @@ const schema = yup.object<FormDataLine>().shape({
     .string()
     .required('Password confirmation is required')
     .oneOf([yup.ref('password')], 'Passwords must match'),
-  acceptTC: yup
-    .boolean()
-    .required('You must accept T&C')
-    .isTrue('You must accept T&C'),
-  country: yup.string().required('Country is required'),
-  image: yup.string().required('Image is required'),
+  acceptTC: yup.boolean().oneOf([true], 'You must accept T&C'),
+  country: yup
+    .string()
+    .required('Country is required')
+    .test(
+      'Country in the list of countries',
+      'Select a country from the list',
+      (country) => COUNTRIES.includes(country)
+    ),
+  imageFile: yup
+    .mixed<FileList>()
+    .test('Validate file existing', 'Please load image', (file) => {
+      if (!file) return false;
+      if (file instanceof File) {
+        return true;
+      }
+      return file.length > 0;
+    })
+    .test('Validate size of image', 'Big size of image (more 4 MB)', (file) => {
+      if (file instanceof File) {
+        return file && file.size <= 4 * 1024 * 1024;
+      }
+      return file && file[0] && file[0].size <= 4 * 1024 * 1024;
+    })
+    .test('File format', 'we support .PNG and .JPEG files', (file) => {
+      if (!file) return false;
+      if (file instanceof File) {
+        return (
+          file.type.includes('png') ||
+          file.type.includes('jpeg') ||
+          file.type.includes('jpg')
+        );
+      }
+      return (
+        file &&
+        file[0] &&
+        (file[0].type.includes('png') ||
+          file[0].type.includes('jpeg') ||
+          file[0].type.includes('jpg'))
+      );
+    }),
+
   gender: yup.string().required('Gender is required'),
 });
 

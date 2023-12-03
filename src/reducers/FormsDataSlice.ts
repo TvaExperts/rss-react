@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FormDataLine } from '../types';
+import { FormDataStore } from '../types';
 
 type FormsDataState = {
-  dataLines: FormDataLine[];
+  dataLines: FormDataStore[];
 };
 
 const initialState: FormsDataState = {
@@ -15,7 +15,7 @@ const FormsDataSlice = createSlice({
   name: 'formsData',
   initialState,
   reducers: {
-    addLine(state, action: PayloadAction<FormDataLine>) {
+    addLine(state, action: PayloadAction<FormDataStore>) {
       state.dataLines.push(action.payload);
     },
   },

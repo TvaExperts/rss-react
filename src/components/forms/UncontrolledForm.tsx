@@ -1,19 +1,21 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CountryInput, ImageInput } from 'components/index';
 import schema from 'components/forms/resolvers/schema';
 import { ValidationError } from 'yup';
-import { useAppDispatch } from '../../hooks/redux';
-import { FormDataLine } from '../../types';
+
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { FormDataInputs } from '../../types';
 import { formsDataActions } from '../../reducers/FormsDataSlice';
 import ROUTES from '../../router/routes';
 import styles from './Form.module.css';
+import { convertInputsDataToStore } from '../../utils/convertInputsDataToStore';
+import { filterCountries } from '../../utils/filterCountries';
 
 function UncontrolledForm() {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
-  const [imageData, setImageData] = useState<string>('');
+
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const formRefs = {
@@ -24,11 +26,35 @@ function UncontrolledForm() {
     passwordConfirm: useRef<HTMLInputElement>(null),
     gender: useRef<HTMLSelectElement>(null),
     acceptTC: useRef<HTMLInputElement>(null),
-    image: React.createRef<HTMLInputElement>(),
-    country: React.createRef<HTMLInputElement>(),
+    image: useRef<HTMLInputElement>(null),
+    country: useRef<HTMLInputElement>(null),
   };
 
-  function getFormData(): FormDataLine {
+  const [isOpenSuggestion, setIsOpenSuggestion] = useState<boolean>(false);
+
+  const { countries } = useAppSelector((state) => state.countriesReducer);
+
+  const [filteredCountries, setFilteredCountries] = useState<string[]>(
+    filterCountries(countries, formRefs.country.current?.value || '')
+  );
+
+  function handleChangeCountry(textValue: string) {
+    if (formRefs.country.current?.value) {
+      formRefs.country.current.value = textValue;
+      setFilteredCountries(filterCountries(countries, textValue));
+      setIsOpenSuggestion(true);
+    }
+  }
+
+  function handleClickSuggestion(country: string) {
+    if (formRefs.country.current?.value) {
+      formRefs.country.current.value = country;
+      setFilteredCountries(filterCountries(countries, country));
+      setIsOpenSuggestion(!isOpenSuggestion);
+    }
+  }
+
+  function getFormData(): FormDataInputs {
     return {
       name: formRefs.name.current?.value || '',
       age: Number(formRefs.age.current?.value) || 0,
@@ -36,14 +62,17 @@ function UncontrolledForm() {
       password: formRefs.password.current?.value || '',
       passwordConfirm: formRefs.passwordConfirm.current?.value || '',
       gender: formRefs.gender.current?.value || '',
-      acceptTC: formRefs.acceptTC.current?.value === 'true',
-      image: imageData,
+      acceptTC: !!formRefs.acceptTC.current?.checked,
+      imageFile: formRefs.image.current?.files
+        ? formRefs.image.current?.files[0]
+        : undefined,
       country: formRefs.country.current?.value || '',
     };
   }
 
   function parseErrors(validationErrors: ValidationError) {
     const newErrors: Record<string, string> = {};
+
     validationErrors.inner.forEach((error) => {
       if (!error.path) return;
       if (!newErrors[error.path]) {
@@ -59,11 +88,21 @@ function UncontrolledForm() {
     const formData = getFormData();
     schema
       .validate(formData, { abortEarly: false })
-      .then(() => {
-        dispatch(formsDataActions.addLine(formData));
+      .then(async () => {
+        const dataToStore = await convertInputsDataToStore(formData);
+        dispatch(formsDataActions.addLine(dataToStore));
         navigate(ROUTES.home);
       })
       .catch(parseErrors);
+  }
+
+  function hasSuggestions() {
+    return !!(
+      formRefs.country.current?.value &&
+      formRefs.country.current?.value.length !== 0 &&
+      filteredCountries.length !== 0 &&
+      isOpenSuggestion
+    );
   }
 
   return (
@@ -131,9 +170,47 @@ function UncontrolledForm() {
             <p className={styles.errorMessage}>{errors.gender}</p>
           )}
         </label>
-        <ImageInput ref={formRefs.image} setImageData={setImageData} />
+        <label htmlFor="image">
+          Image:
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept=".png, .jpg"
+            ref={formRefs.image}
+          />
+          {errors.imageFile && (
+            <p className={styles.errorMessage}>{errors.imageFile}</p>
+          )}
+        </label>
 
-        <CountryInput ref={formRefs.country} />
+        <label htmlFor="country" className={styles.label}>
+          Country:
+          <input
+            type="text"
+            onChange={(event) => handleChangeCountry(event.target.value)}
+            id="country"
+            ref={formRefs.country}
+          />
+          {errors.country && (
+            <p className={styles.errorMessage}>{errors.country}</p>
+          )}
+          {hasSuggestions() && (
+            <ul className={styles.list}>
+              {filteredCountries.map((country) => {
+                return (
+                  <li
+                    className={styles.item}
+                    key={country}
+                    onClick={() => handleClickSuggestion(country)}
+                  >
+                    {country}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </label>
         <label htmlFor="acceptTC">
           Accept T&C:
           <input

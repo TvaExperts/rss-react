@@ -14,16 +14,27 @@ export enum GendersType {
   female,
 }
 
-export interface FormDataLine {
+export interface FormDataInputs {
   name: string;
   age: number;
   email: string;
   password: string;
   passwordConfirm: string;
+  acceptTC?: boolean;
+  gender: string;
+  country: string;
+  imageFile?: FileList | File;
+}
+
+export interface FormDataStore {
+  name: string;
+  age: number;
+  email: string;
+  password: string;
   acceptTC: boolean;
   gender: string;
-  image: string;
+  imageBase64: string;
   country: string;
-  // formType: string;
-  // date: string;
+  formType: string;
+  date: string;
 }

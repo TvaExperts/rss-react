@@ -3,11 +3,12 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import styles from './Form.module.css';
-import { FormDataLine } from '../../types';
+import { FormDataInputs } from '../../types';
 import schema from './resolvers/schema';
 import { useAppDispatch } from '../../hooks/redux';
 import { formsDataActions } from '../../reducers/FormsDataSlice';
 import ROUTES from '../../router/routes';
+import { convertInputsDataToStore } from '../../utils/convertInputsDataToStore';
 
 function ReactHookForm() {
   const dispatch = useAppDispatch();
@@ -16,13 +17,14 @@ function ReactHookForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormDataLine>({
+  } = useForm<FormDataInputs>({
     mode: 'onChange',
-    resolver: yupResolver<FormDataLine>(schema),
+    resolver: yupResolver<FormDataInputs>(schema),
   });
 
-  const onSubmit: SubmitHandler<FormDataLine> = (data) => {
-    dispatch(formsDataActions.addLine(data));
+  const onSubmit: SubmitHandler<FormDataInputs> = async (formData) => {
+    const dataToStore = await convertInputsDataToStore(formData);
+    dispatch(formsDataActions.addLine(dataToStore));
     navigate(ROUTES.home);
   };
 
@@ -85,17 +87,19 @@ function ReactHookForm() {
           <p className={styles.errorMessage}>{errors.gender.message}</p>
         )}
       </label>
-      {/* <ImageInput ref={formRefs.image} setImageData={setImageData} /> */}
 
       <label htmlFor="image">
         Image:
-        <input {...register('image')} type="file" id="image" name="image" />
-        {errors.image && (
-          <p className={styles.errorMessage}>{errors.image.message}</p>
+        <input
+          type="file"
+          id="image"
+          accept=".png, .jpg"
+          {...register('imageFile')}
+        />
+        {errors.imageFile && (
+          <p className={styles.errorMessage}>{errors.imageFile.message}</p>
         )}
       </label>
-
-      {/* <CountryInput ref={formRefs.country} /> */}
       <label htmlFor="country">
         Country:
         <input
