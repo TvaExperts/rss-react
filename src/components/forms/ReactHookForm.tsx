@@ -1,11 +1,17 @@
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from 'react-router-dom';
 import styles from './Form.module.css';
 import { FormDataLine } from '../../types';
 import schema from './resolvers/schema';
+import { useAppDispatch } from '../../hooks/redux';
+import { formsDataActions } from '../../reducers/FormsDataSlice';
+import ROUTES from '../../router/routes';
 
 function ReactHookForm() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -14,8 +20,10 @@ function ReactHookForm() {
     mode: 'onChange',
     resolver: yupResolver<FormDataLine>(schema),
   });
+
   const onSubmit: SubmitHandler<FormDataLine> = (data) => {
-    console.log(data);
+    dispatch(formsDataActions.addLine(data));
+    navigate(ROUTES.home);
   };
 
   return (

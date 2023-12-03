@@ -4,16 +4,17 @@ import { FormDataLine } from '../../../types';
 const schema = yup.object<FormDataLine>().shape({
   name: yup
     .string()
+    .required('Name is required')
     .matches(/^[A-Za-z0-9\s]+$/, 'Only Latin letters')
-    .matches(/^[A-Z]/, 'The name needs to be capitalized')
-    .required('Name is required'),
+    .matches(/^[A-Z]/, 'The name needs to be capitalized'),
   age: yup
     .number()
+    .required('Age is required')
     .typeError('Age must be a number')
-    .positive('Age must be greater than zero')
-    .required('Age is required'),
+    .positive('Age must be greater than zero'),
   email: yup
     .string()
+    .required('Email is required')
     .email('Invalid email address')
     .matches(
       /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
@@ -22,10 +23,10 @@ const schema = yup.object<FormDataLine>().shape({
     .matches(
       /^[\w!#$%&'*+\-/=?^_`{|}~]+(?:\.[\w!#$%&'*+\-/=?^_`{|}~]+)*@[\w-]+(?:\.[\w-]+)*(?:\.[a-zA-Z]{2,})?$/,
       'Invalid local-part format'
-    )
-    .required('Email is required'),
+    ),
   password: yup
     .string()
+    .required('Password is required')
     .matches(
       /^[a-zA-Z0-9!@#$%^&*]*$/,
       'Password must only contain Latin symbols, digits, and special characters'
@@ -37,16 +38,15 @@ const schema = yup.object<FormDataLine>().shape({
       /[!@#$%^&*]/,
       'Password must contain at least one special character'
     )
-    .matches(/^\S*$/, 'Password must not contain whitespace')
-    .required('Password is required'),
+    .matches(/^\S*$/, 'Password must not contain whitespace'),
   passwordConfirm: yup
     .string()
-    .oneOf([yup.ref('password')], 'Passwords must match')
-    .required('Password confirmation is required'),
+    .required('Password confirmation is required')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
   acceptTC: yup
     .boolean()
-    .isTrue('You must accept T&C')
-    .required('You must accept T&C'),
+    .required('You must accept T&C')
+    .isTrue('You must accept T&C'),
   country: yup.string().required('Country is required'),
   image: yup.string().required('Image is required'),
   gender: yup.string().required('Gender is required'),
