@@ -13,8 +13,17 @@ label {
   width: 100%;
   justify-content: space-between;
   user-select: none;
+  position: relative;
 }
 
 button {
   padding: 0.2rem 1rem;
+}
+
+.errorMessage {
+  position: absolute;
+  right: 0;
+  top: 18px;
+  font-size: 0.7rem;
+  color: red;
 }

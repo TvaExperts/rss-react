@@ -19,9 +19,11 @@ export interface FormDataLine {
   age: number;
   email: string;
   password: string;
-  gender: GendersType;
+  passwordConfirm: string;
+  acceptTC: boolean;
+  gender: string;
   image: string;
   country: string;
-  formType: FormType;
-  date: string;
+  // formType: string;
+  // date: string;
 }

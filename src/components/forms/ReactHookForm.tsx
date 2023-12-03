@@ -1,34 +1,45 @@
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import styles from './Form.module.css';
 import { FormDataLine } from '../../types';
-
-export interface ReactFormInputs extends FormDataLine {
-  passwordConfirm: string;
-  acceptTC: boolean;
-}
+import schema from './resolvers/schema';
 
 function ReactHookForm() {
   const {
     register,
     handleSubmit,
-    // formState: { errors },
-  } = useForm<ReactFormInputs>();
-  const onSubmit: SubmitHandler<ReactFormInputs> = (data) => console.log(data);
+    formState: { errors },
+  } = useForm<FormDataLine>({
+    mode: 'onChange',
+    resolver: yupResolver<FormDataLine>(schema),
+  });
+  const onSubmit: SubmitHandler<FormDataLine> = (data) => {
+    console.log(data);
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <label htmlFor="name">
         Name:
         <input {...register('name')} type="text" name="name" id="name" />
+        {errors.name && (
+          <p className={styles.errorMessage}>{errors.name.message}</p>
+        )}
       </label>
       <label htmlFor="age">
         Age:
         <input {...register('age')} type="number" name="age" id="age" />
+        {errors.age && (
+          <p className={styles.errorMessage}>{errors.age.message}</p>
+        )}
       </label>
       <label htmlFor="email">
         Email:
         <input {...register('email')} type="email" name="email" id="email" />
+        {errors.email && (
+          <p className={styles.errorMessage}>{errors.email.message}</p>
+        )}
       </label>
       <label htmlFor="password">
         Password:
@@ -38,6 +49,9 @@ function ReactHookForm() {
           name="password"
           id="password"
         />
+        {errors.password && (
+          <p className={styles.errorMessage}>{errors.password.message}</p>
+        )}
       </label>
       <label htmlFor="passwordConfirm">
         Password Confirmation:
@@ -47,6 +61,11 @@ function ReactHookForm() {
           name="passwordConfirm"
           id="passwordConfirm"
         />
+        {errors.passwordConfirm && (
+          <p className={styles.errorMessage}>
+            {errors.passwordConfirm.message}
+          </p>
+        )}
       </label>
       <label htmlFor="gender">
         Gender:
@@ -54,10 +73,34 @@ function ReactHookForm() {
           <option>Male</option>
           <option>Female</option>
         </select>
+        {errors.gender && (
+          <p className={styles.errorMessage}>{errors.gender.message}</p>
+        )}
       </label>
       {/* <ImageInput ref={formRefs.image} setImageData={setImageData} /> */}
 
+      <label htmlFor="image">
+        Image:
+        <input {...register('image')} type="file" id="image" name="image" />
+        {errors.image && (
+          <p className={styles.errorMessage}>{errors.image.message}</p>
+        )}
+      </label>
+
       {/* <CountryInput ref={formRefs.country} /> */}
+      <label htmlFor="country">
+        Country:
+        <input
+          {...register('country')}
+          type="text"
+          placeholder="Select your country..."
+          id="country"
+          name="country"
+        />
+        {errors.country && (
+          <p className={styles.errorMessage}>{errors.country.message}</p>
+        )}
+      </label>
       <label htmlFor="acceptTC">
         Accept T&C:
         <input
@@ -66,6 +109,9 @@ function ReactHookForm() {
           name="acceptTC"
           id="acceptTC"
         />
+        {errors.acceptTC && (
+          <p className={styles.errorMessage}>{errors.acceptTC.message}</p>
+        )}
       </label>
 
       <button type="submit">Submit</button>
