@@ -7,18 +7,31 @@ type DataLineProps = {
 };
 
 function DataLine({ dataLine }: DataLineProps) {
-  const { name, country, age, date, imageBase64, formType } = dataLine;
+  const {
+    name,
+    country,
+    age,
+    date,
+    imageBase64,
+    formType,
+    email,
+    gender,
+    acceptTC,
+  } = dataLine;
   return (
-    <div className={styles.dataLine}>
+    <li className={styles.dataLine}>
       {imageBase64 && (
         <img src={imageBase64} alt="name" width="30px" height="30px" />
       )}
       <span>{formType}</span>
       <span>{name}</span>
-      <span>{country}</span>
       <span>{age}</span>
+      <span>{email}</span>
+      <span>{gender}</span>
+      <span>{country}</span>
       <span>{date}</span>
-    </div>
+      <span>{acceptTC.valueOf()}</span>
+    </li>
   );
 }
 

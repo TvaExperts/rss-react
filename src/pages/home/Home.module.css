@@ -1,3 +1,6 @@
-.table :first-child {
-  background-color: aqua;
+.table {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 10px;
 }
