@@ -1,17 +1,24 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import schema from 'components/forms/resolvers/schema';
+import { schema } from 'components/forms/schema';
 import { ValidationError } from 'yup';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { FormDataInputs } from '../../types';
-import { formsDataActions } from '../../reducers/FormsDataSlice';
 import ROUTES from '../../router/routes';
 import styles from './Form.module.css';
-import { convertInputsDataToStore } from '../../utils/convertInputsDataToStore';
-import { filterCountries } from '../../utils/filterCountries';
+import { convertInputsDataToLineData } from '../../utils/convertInputsDataToLineData';
+import { filterCountriesForAutocomplete } from '../../utils/filterCountriesForAutocomplete';
+import { useAppDispatch } from '../../store/store';
+import { formsDataSlice } from '../../store/formsData.slice';
 
-function UncontrolledForm() {
+function getGenderFromInputValue(value: string | undefined) {
+  if (!value) {
+    return 'male';
+  }
+  return value === 'female' ? 'female' : 'male';
+}
+
+export function UncontrolledForm() {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
@@ -32,16 +39,14 @@ function UncontrolledForm() {
 
   const [isOpenSuggestion, setIsOpenSuggestion] = useState<boolean>(false);
 
-  const { countries } = useAppSelector((state) => state.countriesReducer);
-
   const [filteredCountries, setFilteredCountries] = useState<string[]>(
-    filterCountries(countries, formRefs.country.current?.value || '')
+    filterCountriesForAutocomplete(formRefs.country.current?.value || '')
   );
 
   function handleChangeCountry(textValue: string) {
     if (formRefs.country.current?.value) {
       formRefs.country.current.value = textValue;
-      setFilteredCountries(filterCountries(countries, textValue));
+      setFilteredCountries(filterCountriesForAutocomplete(textValue));
       setIsOpenSuggestion(true);
     }
   }
@@ -49,7 +54,7 @@ function UncontrolledForm() {
   function handleClickSuggestion(country: string) {
     if (formRefs.country.current?.value) {
       formRefs.country.current.value = country;
-      setFilteredCountries(filterCountries(countries, country));
+      setFilteredCountries(filterCountriesForAutocomplete(country));
       setIsOpenSuggestion(!isOpenSuggestion);
     }
   }
@@ -61,7 +66,7 @@ function UncontrolledForm() {
       email: formRefs.email.current?.value || '',
       password: formRefs.password.current?.value || '',
       passwordConfirm: formRefs.passwordConfirm.current?.value || '',
-      gender: formRefs.gender.current?.value || '',
+      gender: getGenderFromInputValue(formRefs.gender.current?.value),
       acceptTC: !!formRefs.acceptTC.current?.checked,
       imageFile: formRefs.image.current?.files
         ? formRefs.image.current?.files[0]
@@ -89,8 +94,11 @@ function UncontrolledForm() {
     schema
       .validate(formData, { abortEarly: false })
       .then(async () => {
-        const dataToStore = await convertInputsDataToStore(formData);
-        dispatch(formsDataActions.addLine(dataToStore));
+        const dataToStore = await convertInputsDataToLineData(
+          formData,
+          'uncontrolled'
+        );
+        dispatch(formsDataSlice.actions.addLine(dataToStore));
         navigate(ROUTES.home);
       })
       .catch(parseErrors);
@@ -163,8 +171,8 @@ function UncontrolledForm() {
             name="gender"
             id="gender"
           >
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
           </select>
           {errors.gender && (
             <p className={styles.errorMessage}>{errors.gender}</p>
@@ -229,5 +237,3 @@ function UncontrolledForm() {
     </div>
   );
 }
-
-export default UncontrolledForm;

@@ -1,13 +1,15 @@
-import { FormDataInputs, FormDataStore } from '../types';
-import { convertImageToBase64 } from './convert';
+import { FormDataInputs, LineDataInStore, FormType } from '../types';
+import { convertImageToBase64 } from './convertImageToBase64';
 
-export async function convertInputsDataToStore(
-  formData: FormDataInputs
-): Promise<FormDataStore> {
+export async function convertInputsDataToLineData(
+  formData: FormDataInputs,
+  formType: FormType
+): Promise<LineDataInStore> {
   const { email, name, gender, age, acceptTC, country, password, imageFile } =
     formData;
   const file = imageFile instanceof FileList ? imageFile[0] : imageFile;
   const imageBase64 = await convertImageToBase64(file);
+
   return {
     email,
     name,
@@ -18,6 +20,7 @@ export async function convertInputsDataToStore(
     password,
     imageBase64,
     date: new Date().toLocaleString(),
-    formType: 'uncontrolled',
+    id: new Date().valueOf(),
+    formType,
   };
 }

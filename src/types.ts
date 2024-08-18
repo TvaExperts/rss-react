@@ -1,40 +1,24 @@
-import { ReactNode } from 'react';
+export type FormType = 'controlled' | 'uncontrolled';
+export type Gender = 'male' | 'female';
 
-export type PropsWithOptionalChildren<P = unknown> = P & {
-  children?: ReactNode;
-};
-
-export enum FormType {
-  uncontrolled,
-  reactHook,
-}
-
-export enum GendersType {
-  male,
-  female,
-}
-
-export interface FormDataInputs {
-  name: string;
-  age: number;
-  email: string;
-  password: string;
-  passwordConfirm: string;
-  acceptTC?: boolean;
-  gender: string;
-  country: string;
-  imageFile?: FileList | File;
-}
-
-export interface FormDataStore {
+interface UserData {
   name: string;
   age: number;
   email: string;
   password: string;
   acceptTC: boolean;
-  gender: string;
-  imageBase64: string;
+  gender: Gender;
   country: string;
-  formType: string;
+}
+
+export interface FormDataInputs extends UserData {
+  passwordConfirm: string;
+  imageFile?: FileList | File;
+}
+
+export interface LineDataInStore extends UserData {
+  imageBase64: string;
+  formType: FormType;
   date: string;
+  id: number;
 }

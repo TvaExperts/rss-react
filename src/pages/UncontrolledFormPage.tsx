@@ -1,13 +1,11 @@
 import React from 'react';
-import { UncontrolledForm } from 'components';
+import { UncontrolledForm } from 'components/forms/UncontrolledForm';
 
-function UncontrolledFormPage() {
+export function UncontrolledFormPage() {
   return (
-    <div>
+    <>
       <h1>Uncontrolled Form Page</h1>
       <UncontrolledForm />
-    </div>
+    </>
   );
 }
-
-export default UncontrolledFormPage;

@@ -1,20 +1,22 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Home, UncontrolledFormPage, ReactHookFormPage, Fallback } from 'pages';
 
-import { RootLayout } from 'layouts';
-
+import { RootLayout } from 'layouts/RootLayout';
+import { FallbackPage } from 'pages/FallbackPage';
+import { UncontrolledFormPage } from 'pages/UncontrolledFormPage';
+import { ReactHookFormPage } from 'pages/ReactHookFormPage';
+import { HomePage } from 'pages/homePage/HomePage';
 import ROUTES from './routes';
 
 const router = createBrowserRouter([
   {
     path: ROUTES.home,
     element: <RootLayout />,
-    errorElement: <Fallback />,
+    errorElement: <FallbackPage />,
 
     children: [
       {
         path: ROUTES.home,
-        element: <Home />,
+        element: <HomePage />,
       },
       {
         path: ROUTES.uncontrolled,

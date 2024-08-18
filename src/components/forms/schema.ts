@@ -1,8 +1,8 @@
 import * as yup from 'yup';
-import { FormDataInputs } from '../../../types';
-import { COUNTRIES } from '../../../data/countries';
+import { FormDataInputs } from '../../types';
+import { COUNTRIES } from '../../constants/countries';
 
-const schema = yup.object<FormDataInputs>().shape({
+export const schema = yup.object<FormDataInputs>().shape({
   name: yup
     .string()
     .required('Name is required')
@@ -44,7 +44,10 @@ const schema = yup.object<FormDataInputs>().shape({
     .string()
     .required('Password confirmation is required')
     .oneOf([yup.ref('password')], 'Passwords must match'),
-  acceptTC: yup.boolean().oneOf([true], 'You must accept T&C'),
+  acceptTC: yup
+    .boolean()
+    .required('You must accept T&C')
+    .oneOf([true], 'You must accept T&C'),
   country: yup
     .string()
     .required('Country is required')
@@ -86,7 +89,8 @@ const schema = yup.object<FormDataInputs>().shape({
       );
     }),
 
-  gender: yup.string().required('Gender is required'),
+  gender: yup
+    .string()
+    .required('Gender is required')
+    .oneOf(['male', 'female'] as const, 'Invalid value'),
 });
-
-export default schema;

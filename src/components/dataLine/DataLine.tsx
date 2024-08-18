@@ -1,12 +1,7 @@
-import React from 'react';
-import { FormDataStore } from '../../types';
+import { LineDataInStore } from '../../types';
 import styles from './DataLine.module.css';
 
-type DataLineProps = {
-  dataLine: FormDataStore;
-};
-
-function DataLine({ dataLine }: DataLineProps) {
+export function DataLine({ lineData }: { lineData: LineDataInStore }) {
   const {
     name,
     country,
@@ -17,12 +12,11 @@ function DataLine({ dataLine }: DataLineProps) {
     email,
     gender,
     acceptTC,
-  } = dataLine;
+  } = lineData;
+
   return (
     <li className={styles.dataLine}>
-      {imageBase64 && (
-        <img src={imageBase64} alt="name" width="30px" height="30px" />
-      )}
+      <img className={styles.image} src={imageBase64} alt={`${name}`} />
       <span>{formType}</span>
       <span>{name}</span>
       <span>{age}</span>
@@ -34,5 +28,3 @@ function DataLine({ dataLine }: DataLineProps) {
     </li>
   );
 }
-
-export default DataLine;

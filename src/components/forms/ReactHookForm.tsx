@@ -4,20 +4,18 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import styles from './Form.module.css';
 import { FormDataInputs } from '../../types';
-import schema from './resolvers/schema';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { formsDataActions } from '../../reducers/FormsDataSlice';
+import { schema } from './schema';
 import ROUTES from '../../router/routes';
-import { convertInputsDataToStore } from '../../utils/convertInputsDataToStore';
-import { filterCountries } from '../../utils/filterCountries';
+import { useAppDispatch } from '../../store/store';
+import { formsDataSlice } from '../../store/formsData.slice';
+import { convertInputsDataToLineData } from '../../utils/convertInputsDataToLineData';
+import { filterCountriesForAutocomplete } from '../../utils/filterCountriesForAutocomplete';
 
-function ReactHookForm() {
+export function ReactHookForm() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [isOpenSuggestion, setIsOpenSuggestion] = useState<boolean>(false);
-
-  const { countries } = useAppSelector((state) => state.countriesReducer);
 
   const {
     register,
@@ -35,8 +33,8 @@ function ReactHookForm() {
   const [filteredCountries, setFilteredCountries] = useState<string[]>([]);
 
   const onSubmit: SubmitHandler<FormDataInputs> = async (formData) => {
-    const dataToStore = await convertInputsDataToStore(formData);
-    dispatch(formsDataActions.addLine(dataToStore));
+    const lineData = await convertInputsDataToLineData(formData, 'controlled');
+    dispatch(formsDataSlice.actions.addLine(lineData));
     navigate(ROUTES.home);
   };
 
@@ -44,18 +42,18 @@ function ReactHookForm() {
 
   useEffect(() => {
     setValue('country', countryText);
-    const suggestions = filterCountries(countries, countryText);
+    const suggestions = filterCountriesForAutocomplete(countryText);
     setFilteredCountries(suggestions);
     if (!(suggestions.length === 1 && suggestions[0] === countryText)) {
       setIsOpenSuggestion(true);
     } else {
       setIsOpenSuggestion(false);
     }
-  }, [countries, countryText, setValue]);
+  }, [countryText, setValue]);
 
   function handleClickSuggestion(country: string) {
     setValue('country', country);
-    setFilteredCountries(filterCountries(countries, country));
+    setFilteredCountries(filterCountriesForAutocomplete(country));
     setIsOpenSuggestion(false);
     trigger('country');
   }
@@ -121,8 +119,8 @@ function ReactHookForm() {
       <label htmlFor="gender">
         Gender:
         <select {...register('gender')}>
-          <option>Male</option>
-          <option>Female</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
         </select>
         {errors.gender && (
           <p className={styles.errorMessage}>{errors.gender.message}</p>
@@ -184,5 +182,3 @@ function ReactHookForm() {
     </form>
   );
 }
-
-export default ReactHookForm;

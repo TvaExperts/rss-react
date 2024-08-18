@@ -1,25 +1,25 @@
 /* eslint-disable no-param-reassign */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FormDataStore } from '../types';
+import { LineDataInStore } from '../types';
 
 type FormsDataState = {
-  dataLines: FormDataStore[];
+  dataLines: LineDataInStore[];
 };
 
 const initialState: FormsDataState = {
   dataLines: [],
 };
 
-const FormsDataSlice = createSlice({
+export const formsDataSlice = createSlice({
   name: 'formsData',
   initialState,
+  selectors: {
+    selectFormsData: (store) => store.dataLines,
+  },
   reducers: {
-    addLine(state, action: PayloadAction<FormDataStore>) {
+    addLine(state, action: PayloadAction<LineDataInStore>) {
       state.dataLines.push(action.payload);
     },
   },
 });
-
-export const { reducer: formsDataReducer, actions: formsDataActions } =
-  FormsDataSlice;

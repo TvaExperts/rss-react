@@ -1,13 +1,11 @@
 import React from 'react';
-import { ReactHookForm } from 'components';
+import { ReactHookForm } from 'components/forms/ReactHookForm';
 
-function ReactHookFormPage() {
+export function ReactHookFormPage() {
   return (
-    <div>
+    <>
       <h1>React Hook Form Page</h1>
       <ReactHookForm />
-    </div>
+    </>
   );
 }
-
-export default ReactHookFormPage;
